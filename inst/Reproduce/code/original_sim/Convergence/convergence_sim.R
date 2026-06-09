@@ -1,4 +1,4 @@
-library(causalOT)
+library(pforOT)
 library(doRNG)
 
 #### cluster param ####
@@ -30,7 +30,7 @@ methods <- c(
                "Wass.6"
              )
 
-dataGen <- causalOT::Hainmueller$new(n = max_n*3, p = 6, overlap = "high")
+dataGen <- pforOT::Hainmueller$new(n = max_n*3, p = 6, overlap = "high")
 dataGen$gen_data()
 zt <- dataGen$get_z()
 pscore <- c(dataGen$get_pscore())
@@ -83,8 +83,8 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
   
   ps1   <- ps1_full[1:n]
   ps0   <- ps0_full[1:n]
-  h1  <- causalOT::renormalize(1/ps1)
-  h0  <- causalOT::renormalize(1/(1-ps0))
+  h1  <- pforOT::renormalize(1/ps1)
+  h0  <- pforOT::renormalize(1/(1-ps0))
   
   n0  <- n1 <- n
   N   <- n * 2
@@ -239,16 +239,16 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
       
       n0  <- length(w0)
       n1  <- length(w1)
-      w_1 <- causalOT::sinkhorn(x = x1, y = x1, a = h1, b = w1, power = 2,
+      w_1 <- pforOT::sinkhorn(x = x1, y = x1, a = h1, b = w1, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 10,
                                      backend = "auto")$loss
-      w_0 <- causalOT::sinkhorn(x = x0, y = x0, a = h0, b = w0, power = 2,
+      w_0 <- pforOT::sinkhorn(x = x0, y = x0, a = h0, b = w0, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 10,
                                      backend = "auto")$loss
-      w_xy_1 <- causalOT::sinkhorn(x = x1, y = x, a = w1, b = b, power = 2,
+      w_xy_1 <- pforOT::sinkhorn(x = x1, y = x, a = w1, b = b, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 10,
                                      backend = "auto")$loss
-      w_xy_0 <- causalOT::sinkhorn(x = x0, y = x, a = w0, b = b, power = 2,
+      w_xy_0 <- pforOT::sinkhorn(x = x0, y = x, a = w0, b = b, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 10,
                                      backend = "auto")$loss
       

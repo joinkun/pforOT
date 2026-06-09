@@ -5,7 +5,7 @@
 #'
 #' @param formula A formula object specifying the outcome and covariates. 
 #' @param data A data.frame of the data to use in the model.
-#' @param weights Either a vector of weights, one for each observations, or an object of class [causalWeights][causalOT::causalWeights-class].
+#' @param weights Either a vector of weights, one for each observations, or an object of class [causalWeights][pforOT::causalWeights-class].
 #' @param separate.samples.on The variable in the data denoting the treatment indicator. How to separate samples for the optimal transport calculation
 #' @param penalty The penalty parameter to use in the optimal transport calculation. By default it is \eqn{1/\log(n)}{1/log(n)}.
 #' @param cost_function A user supplied cost function. If supplied, must take arguments `x1`, `x2`, and `p`.
@@ -26,7 +26,7 @@
 #' \item `p` The power to which the cost matrix was raised if not using a user supplied cost function.
 #' \item `debias` Whether barycentric projections should be debiased.
 #' \item `tensorized` TRUE/FALSE denoting wether to use offline cost matrices.
-#' \item `data` An object of class [causalOT::dataHolder-class] with the data used to calculate the optimal transport distance.
+#' \item `data` An object of class [pforOT::dataHolder-class] with the data used to calculate the optimal transport distance.
 #' \item `y_a` The outcome vector in the first sample.
 #' \item `y_b` The outcome vector in the second sample.
 #' \item `x_a` The covariate matrix in the first sample.
@@ -53,19 +53,19 @@
 #' design <- "A"
 #' estimate <- "ATT"
 #' power <- 2
-#' data <- causalOT::Hainmueller$new(n = n, p = pp,
+#' data <- pforOT::Hainmueller$new(n = n, p = pp,
 #' design = design, overlap = overlap)
 #' 
 #' data$gen_data()
 #' 
-#' weights <- causalOT::calc_weight(x = data,
+#' weights <- pforOT::calc_weight(x = data,
 #'   z = NULL, y = NULL,
 #'   estimand = estimate,
 #'   method = "NNM")
 #'   
 #'  df <- data.frame(y = data$get_y(), z = data$get_z(), data$get_x())
 #'   
-#'  fit <- causalOT::barycentric_projection(y ~ ., data = df, 
+#'  fit <- pforOT::barycentric_projection(y ~ ., data = df, 
 #'     weight = weights,
 #'     separate.samples.on = "z",
 #'     niter = 2)
@@ -115,7 +115,7 @@ barycentric_projection <- function(formula, data, weights,
   ot       <- OT$new(x = x_a, y = x_b, a = a, b = b,
                  penalty = penalty, cost_function = cost_function, p = p, 
                  debias = TRUE, tensorized = cost.online,
-                 diameter=diameter)
+                 diameter=diameter, df = private$.df)
   ot$sinkhorn_opt(niter, tol)
   
   potentials    <- ot$potentials
@@ -176,12 +176,12 @@ barycentric_projection <- function(formula, data, weights,
 #' design <- "A"
 #' estimate <- "ATT"
 #' power <- 2
-#' data <- causalOT::Hainmueller$new(n = n, p = pp,
+#' data <- pforOT::Hainmueller$new(n = n, p = pp,
 #' design = design, overlap = overlap)
 #' 
 #' data$gen_data()
 #' 
-#' weights <- causalOT::calc_weight(x = data,
+#' weights <- pforOT::calc_weight(x = data,
 #'   z = NULL, y = NULL,
 #'   estimand = estimate,
 #'   method = "NNM")
@@ -189,12 +189,12 @@ barycentric_projection <- function(formula, data, weights,
 #'  df <- data.frame(y = data$get_y(), z = data$get_z(), data$get_x())
 #'   
 #'  # undebiased
-#'  fit <- causalOT::barycentric_projection(y ~ ., data = df, 
+#'  fit <- pforOT::barycentric_projection(y ~ ., data = df, 
 #'     weight = weights,
 #'     separate.samples.on = "z", niter = 2)
 #'     
 #'  #debiased
-#'  fit_d <- causalOT::barycentric_projection(y ~ ., data = df, 
+#'  fit_d <- pforOT::barycentric_projection(y ~ ., data = df, 
 #'     weight = weights,
 #'     separate.samples.on = "z", debias = TRUE, niter = 2)
 #'  
@@ -410,10 +410,10 @@ construct_bp_est  <- function(bp_fun,lambda,
                               x_new, x_t, y_hat_t, y_t,
                               f_st,l_target_measure,
                               tensorized,
-                              niter, tol, dots) {
+                              niter, tol, dots, data = NULL) {
   s_to_t_sel <- z_source == source & (z_target == target | z_target == "both")
   x_s_to_t   <- x_new[ s_to_t_sel , , drop = FALSE]
-  C_s_to_t   <- cost(x_s_to_t, x_t, p = p, tensorized = tensorized, cost_function = cost_function)
+  C_s_to_t   <- cost(x_s_to_t, x_t, p = p, tensorized = tensorized, cost_function = cost_function, data = data)
   y_s_to_t   <- bp_fun(nrow(x_s_to_t), lambda, C_s_to_t, y_t,
                        f_st, l_target_measure, tensorized, 
                        niter, tol, dots)

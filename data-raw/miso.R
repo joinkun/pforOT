@@ -1,4 +1,4 @@
-library(causalOT)
+library(pforOT)
 library(forcats)
 library(dplyr)
 library(foreign)

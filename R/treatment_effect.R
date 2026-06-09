@@ -1,7 +1,7 @@
 #' Estimate treatment effects
 #'
-#' @param causalWeights An object of class [causalWeights][causalOT::causalWeights-class]
-#' @param x A dataHolder, matrix, data.frame, or object of class DataSim. See [calc_weight][causalOT::calc_weight] for more details how to input the data. If `NULL`, will use the info in the `causalWeights` argument.
+#' @param causalWeights An object of class [causalWeights][pforOT::causalWeights-class]
+#' @param x A dataHolder, matrix, data.frame, or object of class DataSim. See [calc_weight][pforOT::calc_weight] for more details how to input the data. If `NULL`, will use the info in the `causalWeights` argument.
 #' @param y The outcome vector.
 #' @param model.function The modeling function to use, if desired. Must take arguments "formula", "data", and "weights". Other arguments passed via `...`, the dots.
 #' @param estimate.separately Should the outcome model be estimated separately in each treatment group? TRUE or FALSE.
@@ -9,7 +9,7 @@
 #' @param normalize.weights Should the weights in the `causalWeights` argument be normalized to sum to one prior to effect estimation?
 #' @param ... Pass additional arguments to the outcome modeling functions.
 #'
-#' @return an object of class [causalEffect][causalOT::causalEffect-class]
+#' @return an object of class [causalEffect][pforOT::causalEffect-class]
 #' @export
 #'
 #' @examples
@@ -84,14 +84,14 @@ estimate_effect <- function(causalWeights,
 #'
 #' @slot estimate The estimated treatment effect.
 #' @slot estimand The estimand of interest
-#' @slot weights The weights as an object of class [causalWeights][causalOT::causalWeights-class]
+#' @slot weights The weights as an object of class [causalWeights][pforOT::causalWeights-class]
 #' @slot augmentedData The data as a `data.frame` with variables `weights`, `y_obs`, `y_0`, `y_1`, `y_hat_0`, `y_hat_1`, `x`, and `z`. See details for more info.
 #' @slot fit The fitted model if present. See details.
-#' @slot call The call from the [estimate_effect()][causalOT::estimate_effect] function.
+#' @slot call The call from the [estimate_effect()][pforOT::estimate_effect] function.
 #' 
 #' @details The variables in slot `augmentedData` are 
 #' \itemize{
-#' \item `weights`: The [causalWeights][causalOT::causalWeights-class] targeting the causal estimand.
+#' \item `weights`: The [causalWeights][pforOT::causalWeights-class] targeting the causal estimand.
 #' \item `y_obs`: The vector of the observed outcomes for each observation
 #' \item `y_0`: The outcome under the control condition. Missingness respects the design of the experiment. i.e., \eqn{Y(0) | Z = 1} = `NA`.
 #' \item `y_hat_0`: The conditional mean outcome under the control condition. Estimated from a model.
@@ -117,13 +117,13 @@ setClass("causalEffect", slots = c(estimate = "numeric",
 
 #' causalEffect constructor function
 #'
-#' @param data an object of class [dataHolder][causalOT::dataHolder-class]
-#' @param causalWeights  an object of class [causalWeights][causalOT::causalWeights-class]
-#' @param model.outputs Outputs of the [estimate_model()][causalOT::estimate_model] function
+#' @param data an object of class [dataHolder][pforOT::dataHolder-class]
+#' @param causalWeights  an object of class [causalWeights][pforOT::causalWeights-class]
+#' @param model.outputs Outputs of the [estimate_model()][pforOT::estimate_model] function
 #' @param augment.estimate Is the estimate to be the augmented (doubly robust) estimator? TRUE/FALSE
 #' @param call the call used to calculate the treatment effects
 #'
-#' @return  an object of class [causalEffect][causalOT::causalEffect-class]
+#' @return  an object of class [causalEffect][pforOT::causalEffect-class]
 #' @keywords internal
 causalEffect <- function(data, causalWeights, model.outputs, augment.estimate, call) {
   
@@ -208,8 +208,8 @@ causalEffect <- function(data, causalWeights, model.outputs, augment.estimate, c
 
 #' Function to estimate outcome models
 #'
-#' @param data A [causalOT::dataHolder()] object
-#' @param causalWeights A [causalOT::causalWeights-class] object
+#' @param data A [pforOT::dataHolder()] object
+#' @param causalWeights A [pforOT::causalWeights-class] object
 #' @param model.function The model function passed by the user
 #' @param separate.estimation TRUE or FALSE, should models be estimated separately in each group?
 #' @param ... Extra agruments passed to the predict functions
@@ -298,7 +298,7 @@ estimate_model <- function(data, causalWeights, model.function,
 
 #' Extract treatment effect estimate
 #'
-#' @param object An object of class [causalOT::causalEffect-class]
+#' @param object An object of class [pforOT::causalEffect-class]
 #' @param ... Not used
 #'
 #' @return A number corresponding to the estimated treatment effect
@@ -324,7 +324,7 @@ coef.causalEffect <- function(object, ...) {
 
 #' Get the variance of a causalEffect
 #'
-#' @param object An object of class [causalEffect][causalOT::causalEffect-class]
+#' @param object An object of class [causalEffect][pforOT::causalEffect-class]
 #' @param ... Passed on to the sandwich estimator if there is a model fit that supports one
 #'
 #' @return The variance of the treatment effect as a matrix

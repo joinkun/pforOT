@@ -41,12 +41,12 @@ overlap <- "low"
 design <- "A"
 estimate <- "ATT"
 power <- 2
-data <- causalOT::Hainmueller$new(n = n, p = pp,
+data <- pforOT::Hainmueller$new(n = n, p = pp,
 design = design, overlap = overlap)
 
 data$gen_data()
 
-weights <- causalOT::calc_weight(x = data,
+weights <- pforOT::calc_weight(x = data,
   z = NULL, y = NULL,
   estimand = estimate,
   method = "NNM")
@@ -54,12 +54,12 @@ weights <- causalOT::calc_weight(x = data,
  df <- data.frame(y = data$get_y(), z = data$get_z(), data$get_x())
   
  # undebiased
- fit <- causalOT::barycentric_projection(y ~ ., data = df, 
+ fit <- pforOT::barycentric_projection(y ~ ., data = df, 
     weight = weights,
     separate.samples.on = "z", niter = 2)
     
  #debiased
- fit_d <- causalOT::barycentric_projection(y ~ ., data = df, 
+ fit_d <- pforOT::barycentric_projection(y ~ ., data = df, 
     weight = weights,
     separate.samples.on = "z", debias = TRUE, niter = 2)
  

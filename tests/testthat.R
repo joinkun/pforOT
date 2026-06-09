@@ -1,4 +1,4 @@
 library(testthat)
-library(causalOT)
+library(pforOT)
 
-test_check("causalOT")
+test_check("pforOT")

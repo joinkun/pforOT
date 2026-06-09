@@ -1,4 +1,4 @@
-library(causalOT)
+library(pforOT)
 library(doRNG)
 
 #### cluster param ####
@@ -20,8 +20,8 @@ bp_bs <- function(weights, x,z, cost, estimand = "ATE", n.boot = 100, lambda = .
     n1 <- nrow(x1)
     n2 <- nrow(x2)
     
-    a_bs <- causalOT:::renormalize(w * c( rmultinom(1, n1, a) ) )
-    b_bs <- causalOT:::renormalize(b * c( rmultinom(1, n2, b) ) )
+    a_bs <- pforOT:::renormalize(w * c( rmultinom(1, n1, a) ) )
+    b_bs <- pforOT:::renormalize(b * c( rmultinom(1, n2, b) ) )
     
     epsilon <- lambda/median(cost)
     
@@ -30,7 +30,7 @@ bp_bs <- function(weights, x,z, cost, estimand = "ATE", n.boot = 100, lambda = .
     
     # create normalized version of gamma for matrix sums
     gamma_norm <- matrix(0, n1, n2)
-    gamma_norm[causalOT:::dist_2d_to_1d(tplan$from, tplan$to,n1, n2)] <- tplan$mass * 1/b_bs[tplan$to]
+    gamma_norm[pforOT:::dist_2d_to_1d(tplan$from, tplan$to,n1, n2)] <- tplan$mass * 1/b_bs[tplan$to]
     
     loss <- sum((crossprod(x1, gamma_norm) - t(x2))^2 %*% (b*(b_bs>0)))
     return(loss)
@@ -47,7 +47,7 @@ bp_bs <- function(weights, x,z, cost, estimand = "ATE", n.boot = 100, lambda = .
   w1 <- weights$w1
   w0 <- weights$w0
   
-  sw <- causalOT:::get_sample_weight(NULL, z)
+  sw <- pforOT:::get_sample_weight(NULL, z)
   
   # x1_bs <- lapply(1:nboot, function() {sw$a * rmultinom(1, n1, sw$a) })
   # x0_bs <- lapply(1:nboot, function() {sw$b * rmultinom(1, n0, sw$b) })
@@ -64,13 +64,13 @@ sink_bs <- function(weights, x,z, cost, estimand = "ATE", n.boot = 100) {
     n1 <- nrow(x1)
     n2 <- nrow(x2)
     
-    a_bs <- causalOT:::renormalize(w * c( rmultinom(1, n1, a) ) )
-    b_bs <- causalOT:::renormalize(b * c( rmultinom(1, n2, b) ) )
+    a_bs <- pforOT:::renormalize(w * c( rmultinom(1, n1, a) ) )
+    b_bs <- pforOT:::renormalize(b * c( rmultinom(1, n2, b) ) )
     
     # tplan <- approxOT::transport_plan_given_C(mass_x = a_bs, mass_y = b_bs, p = 2, cost = cost, method = "sinkhorn",
     #                                           unbiased = FALSE)
     # gamma <- matrix(0, n1, n2)
-    # gamma[causalOT:::dist_2d_to_1d(tplan$from, tplan$to,n1, n2)] <- tplan$mass
+    # gamma[pforOT:::dist_2d_to_1d(tplan$from, tplan$to,n1, n2)] <- tplan$mass
     # 
     # blur <- 0.05*median(cost)
     blur <- 100
@@ -91,7 +91,7 @@ sink_bs <- function(weights, x,z, cost, estimand = "ATE", n.boot = 100) {
   n0 <- nrow(x0)
   n  <- nrow(x)
   
-  sw <- causalOT:::get_sample_weight(NULL, z)
+  sw <- pforOT:::get_sample_weight(NULL, z)
   
   # x1_bs <- lapply(1:nboot, function() {sw$a * rmultinom(1, n1, sw$a) })
   # x0_bs <- lapply(1:nboot, function() {sw$b * rmultinom(1, n0, sw$b) })
@@ -113,7 +113,7 @@ methods <- c(
                # "Wass.2"
              )
 
-dataGen <- causalOT::Hainmueller$new(n = max_n*3, p = 6, overlap = "high")
+dataGen <- pforOT::Hainmueller$new(n = max_n*3, p = 6, overlap = "high")
 dataGen$gen_data()
 zt <- dataGen$get_z()
 pscore <- c(dataGen$get_pscore())
@@ -167,8 +167,8 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
   
   ps1   <- ps1_full[1:n]
   ps0   <- ps0_full[1:n]
-  h1  <- causalOT:::renormalize(1/ps1)
-  h0  <- causalOT:::renormalize(1/(1-ps0))
+  h1  <- pforOT:::renormalize(1/ps1)
+  h0  <- pforOT:::renormalize(1/(1-ps0))
   
   n0  <- n1 <- n
   N   <- n * 2
@@ -288,7 +288,7 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
                    wass.method = "sinkhorn_geom",
                    wass.iter = 1e3,
                    lambda = lambda,
-                   sample_weight = causalOT:::get_sample_weight(NULL, z),
+                   sample_weight = pforOT:::get_sample_weight(NULL, z),
                    estimand = "ATE", 
                    method = meth, 
                    solver = solver, 
@@ -306,7 +306,7 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
                    balance.covariates = colnames(x),
                    treatment.indicator = "z",
                    outcome = "y")
-      balcheck <- causalOT:::eval_weights(weights, args)
+      balcheck <- pforOT:::eval_weights(weights, args)
       sel0 <- balcheck$sel$control[[1]]
       sel1 <- balcheck$sel$treated[[1]]
       # start <- proc.time()
@@ -323,12 +323,12 @@ out <- foreach::foreach(n = ns, .combine = rbind) %do% {
       # print(end - start)
       
       w_1 <- sapply(weights, function(w)
-        causalOT::sinkhorn(x = x1, y = x1, a = h1, b = w$w1, power = 2,
+        pforOT::sinkhorn(x = x1, y = x1, a = h1, b = w$w1, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 1e-1,
                                      backend = "auto")$loss)
       
       w_0 <- sapply(weights, function(w)
-        causalOT::sinkhorn(x = x0, y = x0, a = h0, b = w$w0, power = 2,
+        pforOT::sinkhorn(x = x0, y = x0, a = h0, b = w$w0, power = 2,
                                      metric = "Lp", debias = TRUE, blur = 1e-1,
                                      backend = "auto")$loss)
       

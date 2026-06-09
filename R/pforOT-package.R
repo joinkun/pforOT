@@ -3,8 +3,8 @@
 #' R code to perform causal inference weighting using a variety of methods and optimizers. The code can estimate weights, estimate treatment effects, and also give variance estimates. These methods are described in Dunipace, Eric (2021) <https://arxiv.org/abs/2109.01991>.
 #'
 #' @author Eric Dunipace
-#' @name causalOT
-#' @useDynLib causalOT, .registration = TRUE
+#' @name pforOT
+#' @useDynLib pforOT, .registration = TRUE
 #' @importFrom Rcpp sourceCpp 
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods as slotNames
@@ -12,7 +12,7 @@
 #' @importFrom utils capture.output data methods setTxtProgressBar txtProgressBar
 #' @importFrom R6 R6Class
 #' @importFrom methods setOldClass
-#' @rdname causalOT-package
+#' @rdname pforOT-package
 #' @keywords internal 
 "_PACKAGE"
 

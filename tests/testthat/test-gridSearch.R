@@ -1,7 +1,7 @@
 testthat::test_that("gridSearch class forms", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(128)
+  hain <- pforOT:::Hainmueller$new(128)
   hain$gen_data()
   data <- dataHolder(hain)
   
@@ -18,13 +18,13 @@ testthat::test_that("gridSearch class forms", {
 testthat::test_that("gridSearch SBW", {
   testthat::skip_if_not_installed("osqp")
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "SBW"
   
   # by function SBW
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                               estimand = "ATT",
                               method = method,
                               options = list()))
@@ -35,25 +35,25 @@ testthat::test_that("gridSearch SBW", {
   testthat::expect_true(inherits(gs@solver, "SBW"))
   testthat::expect_true(gs@method == "SBW")
   testthat::expect_true(gs@estimand == "ATT")
-  mess <- testthat::capture_output(suppressWarnings(cw <- causalOT:::cot_solve(gs)))
+  mess <- testthat::capture_output(suppressWarnings(cw <- pforOT:::cot_solve(gs)))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                               estimand = "ATC",
                               method = method,
                               options = list()))
   testthat::expect_true(inherits(gs, "gridSearch"))
   testthat::expect_true(gs@estimand == "ATC")
-  mess <- testthat::capture_output(suppressWarnings(cw <- causalOT:::cot_solve(gs)))
+  mess <- testthat::capture_output(suppressWarnings(cw <- pforOT:::cot_solve(gs)))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                               estimand = "ATE",
                               method = method,
                               options = list()))
   testthat::expect_true(inherits(gs, "ateClass"))
   
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
 })
@@ -61,13 +61,13 @@ testthat::test_that("gridSearch SBW", {
 testthat::test_that("gridSearch EBW", {
   testthat::skip_if_not_installed("lbfgsb3c")
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "EntropyBW"
   
   # by function SBW
-  gs <- causalOT:::gridSearch(data = data,
+  gs <- pforOT:::gridSearch(data = data,
          estimand = "ATT",
          method = method,
          options = list())
@@ -79,34 +79,34 @@ testthat::test_that("gridSearch EBW", {
   testthat::expect_true(gs@method == "EntropyBW")
   testthat::expect_true(gs@estimand == "ATT")
   
-  mess <- testthat::capture_output(testthat::expect_warning(cw <- causalOT:::cot_solve(gs)))
+  mess <- testthat::capture_output(testthat::expect_warning(cw <- pforOT:::cot_solve(gs)))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATC",
                                                                method = method,
                                                                options = list()))
   testthat::expect_true(inherits(gs, "gridSearch"))
   testthat::expect_true(gs@estimand == "ATC")
-  mess <- testthat::capture_output(testthat::expect_warning(cw <- causalOT:::cot_solve(gs)))
+  mess <- testthat::capture_output(testthat::expect_warning(cw <- pforOT:::cot_solve(gs)))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATE",
                                                                method = method,
                                                                options = list()))
   testthat::expect_true(inherits(gs, "ateClass"))
   
-  mess <- testthat::capture_output(testthat::expect_warning(cw <- causalOT:::cot_solve(gs)))
+  mess <- testthat::capture_output(testthat::expect_warning(cw <- pforOT:::cot_solve(gs)))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
 })
 
 testthat::test_that("gridSearch COT", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "COT"
@@ -116,7 +116,7 @@ testthat::test_that("gridSearch COT", {
                  torch.optimizer = torch::optim_lbfgs)
   
   # by function
-  gs <- testthat::expect_warning(causalOT:::gridSearch(data = data,
+  gs <- testthat::expect_warning(pforOT:::gridSearch(data = data,
                               estimand = "ATT",
                               method = method,
                               options = options))
@@ -128,34 +128,34 @@ testthat::test_that("gridSearch COT", {
   testthat::expect_true(gs@method == "COT")
   testthat::expect_true(gs@estimand == "ATT")
   
-  cw <- causalOT:::cot_solve(gs)
+  cw <- pforOT:::cot_solve(gs)
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(testthat::expect_warning(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(testthat::expect_warning(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATC",
                                                                method = method,
                                                                options = options)))
   testthat::expect_true(inherits(gs, "gridSearch"))
   testthat::expect_true(gs@estimand == "ATC")
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(testthat::expect_warning(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(testthat::expect_warning(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATE",
                                                                method = method,
                                                                options = options)))
   testthat::expect_true(inherits(gs, "ateClass"))
   
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
 })
 
 testthat::test_that("gridSearch NNM", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "NNM"
@@ -165,7 +165,7 @@ testthat::test_that("gridSearch NNM", {
                  torch.optimizer = torch::optim_lbfgs)
   
   # by function
-  gs <- testthat::expect_warning(causalOT:::gridSearch(data = data,
+  gs <- testthat::expect_warning(pforOT:::gridSearch(data = data,
                               estimand = "ATT",
                               method = method,
                               options = options))
@@ -177,25 +177,25 @@ testthat::test_that("gridSearch NNM", {
   testthat::expect_true(gs@method == "NNM")
   testthat::expect_true(gs@estimand == "ATT")
   
-  cw <- causalOT:::cot_solve(gs)
+  cw <- pforOT:::cot_solve(gs)
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(testthat::expect_warning(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(testthat::expect_warning(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATC",
                                                                method = method,
                                                                options = options)))
   testthat::expect_true(inherits(gs, "gridSearch"))
   testthat::expect_true(gs@estimand == "ATC")
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(testthat::expect_warning(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(testthat::expect_warning(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATE",
                                                                method = method,
                                                                options = options)))
   testthat::expect_true(inherits(gs, "ateClass"))
   
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
 })
@@ -204,13 +204,13 @@ testthat::test_that("gridSearch NNM", {
 testthat::test_that("gridSearch SCM", {
   testthat::skip_if_not_installed("osqp")
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "SCM"
   
   # by function
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                               estimand = "ATT",
                               method = method,
                               options = list(NULL)))
@@ -223,25 +223,25 @@ testthat::test_that("gridSearch SCM", {
   testthat::expect_true(gs@method == "SCM")
   testthat::expect_true(gs@estimand == "ATT")
   
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATC",
                                                                method = method,
                                                                options = options))
   testthat::expect_true(inherits(gs, "gridSearch"))
   testthat::expect_true(gs@estimand == "ATC")
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
-  mess <- testthat::capture_output(gs <- causalOT:::gridSearch(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::gridSearch(data = data,
                                                                estimand = "ATE",
                                                                method = method,
                                                                options = options))
   testthat::expect_true(inherits(gs, "ateClass"))
   
-  mess <- testthat::capture_output(cw <- causalOT:::cot_solve(gs))
+  mess <- testthat::capture_output(cw <- pforOT:::cot_solve(gs))
   testthat::expect_true(inherits(cw, "causalWeights"))
   
 })

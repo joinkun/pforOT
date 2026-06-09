@@ -64,7 +64,8 @@ COT <- R6::R6Class(
     },
     initialize = function(source, target,
                           a = NULL, b = NULL,
-                          options = list(NULL)) {
+                          options = list(NULL),
+                          df = NULL) {
       # browser()
       if (missing(source) || missing(target)) stop("Must provide source and target")
       if (!inherits(options, "cotOptions")) options <- do.call(cotOptions, options)
@@ -148,6 +149,7 @@ COT <- R6::R6Class(
       optim_args_names <- names(formals(private$optimizer$setup_arguments))
       opt_args <- options[match(optim_args_names,
                                 names_args, nomatch = 0L)]
+      opt_args$df <- df                          
       do.call(private$optimizer$setup_arguments, opt_args)
       
       return(invisible(self))
@@ -485,7 +487,8 @@ cotOptions <- function(lambda = NULL,
 
 balanceDistributions <- function(source, target,
                                  a, b,
-                                 method, options) {
+                                 method, options, df = NULL) {
+
   if(method == "SCM") {
     if (!is.list(options)) options <- list(options)
     
@@ -505,7 +508,7 @@ balanceDistributions <- function(source, target,
     
     prob <- COT$new(source = source, target = target,
                       a = a, b= b,
-                      options = options)
+                      options = options, df = df)
     penalty <- prob$penalty
     options["lambda"] <- list(penalty$lambda)
     options["delta"] <- list(penalty$delta)

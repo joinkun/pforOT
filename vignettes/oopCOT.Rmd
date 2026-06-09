@@ -17,7 +17,7 @@ vignette: >
 
 
 ## Overview
-For most users, the vanilla function `calc_weight` should be sufficient for most use cases with binary treatments. However, for users with more complicated data structures or problems, the `causalOT` package offers a more flexible interface heavily reliant on the `torch` package. We will walk through a few use cases here to show how one might use the object-oriented programming (OOP) objects. 
+For most users, the vanilla function `calc_weight` should be sufficient for most use cases with binary treatments. However, for users with more complicated data structures or problems, the `pforOT` package offers a more flexible interface heavily reliant on the `torch` package. We will walk through a few use cases here to show how one might use the object-oriented programming (OOP) objects. 
 
 One **very** important thing to note is that these objects are mutable; in other words, they are always passed by reference so changes to the base objects will effect all other objects they are reliant on. Thus, changes will propagate forward and backward. For these reasons, these objects will be more dangerous in terms of side-effects and should be used carefully.
 
@@ -144,7 +144,7 @@ m
 
 
 ### OTProblem objects
-The next important component of the OOP framework in `causalOT` are the `OTProblem` objects. Say we have to measures, one we want to target, `m_target`, and one we want to adapt to the target measure, `m_source` by changing its weights.
+The next important component of the OOP framework in `pforOT` are the `OTProblem` objects. Say we have to measures, one we want to target, `m_target`, and one we want to adapt to the target measure, `m_source` by changing its weights.
 
 ```r
 m_target <- Measure(x = matrix(rnorm(n*2*d), n*2,d))

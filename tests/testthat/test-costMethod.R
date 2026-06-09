@@ -1,9 +1,9 @@
 testthat::test_that("costParent class forms", {
-  testthat::expect_silent ( cost <- causalOT:::costParent$new())
+  testthat::expect_silent ( cost <- pforOT:::costParent$new())
 })
 
 testthat::test_that("costTensor class forms", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(124123)
   n <- 10
   m <- 11
@@ -12,7 +12,7 @@ testthat::test_that("costTensor class forms", {
   y <- matrix(stats::rnorm(m*d), m, d)
   
   # given just p
-  testthat::expect_silent(cost <- causalOT:::costTensor$new(x = x, y = y, p = 2L))
+  testthat::expect_silent(cost <- pforOT:::costTensor$new(x = x, y = y, p = 2L))
   testthat::expect_equal(cost$data$dim(), 2)
   testthat::expect_equal(cost$data$shape, c(10L,11L))
   testthat::expect_true(inherits(cost, "R6"))
@@ -30,7 +30,7 @@ testthat::test_that("costTensor class forms", {
     m <- nrow(y)
     as.matrix(stats::dist(rbind(x,y), method = "manhattan"))[1:n,(n+1):(m+n)]
   }
-  testthat::expect_silent(cost <- causalOT:::costTensor$new(x = x, y = y, cost_function = cost_fun))
+  testthat::expect_silent(cost <- pforOT:::costTensor$new(x = x, y = y, cost_function = cost_fun))
   testthat::expect_equal(cost$data$dim(), 2)
   testthat::expect_equal(cost$data$shape, c(10L,11L))
   testthat::expect_true(inherits(cost, "R6"))
@@ -41,14 +41,14 @@ testthat::test_that("costTensor class forms", {
                               ignore_attr = TRUE,
                               tolerance = 1e-5)
   testthat::expect_equal(object = cost$data, 
-                              expected = causalOT:::costTensor$new(x = x, y = y, p = 1L)$data)
+                              expected = pforOT:::costTensor$new(x = x, y = y, p = 1L)$data)
   
   
 })
 
 testthat::test_that("costOnline class forms", {
   testthat::skip_on_cran()
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   testthat::skip_on_ci()
   set.seed(124123)
   n <- 10
@@ -58,13 +58,13 @@ testthat::test_that("costOnline class forms", {
   y <- matrix(stats::rnorm(m*d), m, d)
   
   # given just p
-  testthat::expect_silent(cost <- causalOT:::costOnline$new(x = x, y = y, p = 2L))
+  testthat::expect_silent(cost <- pforOT:::costOnline$new(x = x, y = y, p = 2L))
   testthat::expect_equal(dim(cost$data$x), c(n,d))
   testthat::expect_equal(dim(cost$data$y), c(m,d))
   testthat::expect_true(inherits(cost, "R6"))
   testthat::expect_true(inherits(cost, "costOnline"))
   testthat::expect_true(inherits(cost, "cost"))
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   keops_sum <- rkeops::keops_kernel(
     formula = paste0("Sum_Reduction(", cost$fun, ", 0)"),
     args = c(
@@ -80,13 +80,13 @@ testthat::test_that("costOnline class forms", {
   
   # given cost_function
   cost_fun <- "Abs(X - Y)"
-  testthat::expect_silent(cost <- causalOT:::costOnline$new(x = x, y = y, cost_function = cost_fun))
+  testthat::expect_silent(cost <- pforOT:::costOnline$new(x = x, y = y, cost_function = cost_fun))
   testthat::expect_equal(dim(cost$data$x), c(n,d))
   testthat::expect_equal(dim(cost$data$y), c(m,d))
   testthat::expect_true(inherits(cost, "R6"))
   testthat::expect_true(inherits(cost, "costOnline"))
   testthat::expect_true(inherits(cost, "cost"))
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   keops_sum2 <- rkeops::keops_kernel(
     formula = paste0("Sum_Reduction(", cost$fun, ", 0)"),
     args = c(
@@ -103,7 +103,7 @@ testthat::test_that("costOnline class forms", {
 })
 
 testthat::test_that("cost function forms appropriate classes", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(124123)
   n <- 10
   m <- 11
@@ -112,7 +112,7 @@ testthat::test_that("cost function forms appropriate classes", {
   y <- matrix(stats::rnorm(m*d), m, d)
   
   # given just p
-  testthat::expect_silent(cost <- causalOT:::cost(x = x, y = y, p = 2L))
+  testthat::expect_silent(cost <- pforOT:::cost(x = x, y = y, p = 2L))
   testthat::expect_equal(cost$data$dim(), 2)
   testthat::expect_equal(cost$data$shape, c(10L,11L))
   testthat::expect_true(inherits(cost, "R6"))
@@ -130,7 +130,7 @@ testthat::test_that("cost function forms appropriate classes", {
     m <- nrow(y)
     as.matrix(stats::dist(rbind(x,y), method = "manhattan"))[1:n,(n+1):(m+n)]
   }
-  testthat::expect_silent(cost <- causalOT:::cost(x = x, y = y, cost_function = cost_fun))
+  testthat::expect_silent(cost <- pforOT:::cost(x = x, y = y, cost_function = cost_fun))
   testthat::expect_equal(cost$data$dim(), 2)
   testthat::expect_equal(cost$data$shape, c(10L,11L))
   testthat::expect_true(inherits(cost, "R6"))
@@ -141,21 +141,21 @@ testthat::test_that("cost function forms appropriate classes", {
                               ignore_attr = TRUE,
                               tolerance = 1e-5)
   testthat::expect_equal(object = cost$data, 
-                         expected = causalOT:::costTensor$new(x = x, y = y, p = 1L)$data)
+                         expected = pforOT:::costTensor$new(x = x, y = y, p = 1L)$data)
   
   # online
   testthat::skip_on_cran()
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   testthat::skip_on_ci()
   
   # given just p
-  testthat::expect_silent(cost <- causalOT:::cost(x = x, y = y, p = 2L, tensorized = FALSE))
+  testthat::expect_silent(cost <- pforOT:::cost(x = x, y = y, p = 2L, tensorized = FALSE))
   testthat::expect_equal(dim(cost$data$x), c(n,d))
   testthat::expect_equal(dim(cost$data$y), c(m,d))
   testthat::expect_true(inherits(cost, "R6"))
   testthat::expect_true(inherits(cost, "costOnline"))
   testthat::expect_true(inherits(cost, "cost"))
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   keops_sum <- rkeops::keops_kernel(
     formula = paste0("Sum_Reduction(", cost$fun, ", 0)"),
     args = c(
@@ -175,14 +175,14 @@ testthat::test_that("cost function forms appropriate classes", {
     m <- nrow(y)
     as.matrix(stats::dist(rbind(x,y), method = "manhattan"))[1:n,(n+1):(m+n)]
   }
-  testthat::expect_error(cost <- causalOT:::cost(x = x, y = y, cost_function = cost_fun, tensorized = FALSE))
-  testthat::expect_silent(cost <- causalOT:::cost(x = x, y = y, cost_function = "Sum(Abs(X-Y))", tensorized = FALSE))
+  testthat::expect_error(cost <- pforOT:::cost(x = x, y = y, cost_function = cost_fun, tensorized = FALSE))
+  testthat::expect_silent(cost <- pforOT:::cost(x = x, y = y, cost_function = "Sum(Abs(X-Y))", tensorized = FALSE))
   testthat::expect_equal(dim(cost$data$x), c(n,d))
   testthat::expect_equal(dim(cost$data$y), c(m,d))
   testthat::expect_true(inherits(cost, "R6"))
   testthat::expect_true(inherits(cost, "costOnline"))
   testthat::expect_true(inherits(cost, "cost"))
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   keops_sum2 <- rkeops::keops_kernel(
     formula = paste0("Sum_Reduction(", cost$fun, ", 0)"),
     args = c(

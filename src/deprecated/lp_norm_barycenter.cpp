@@ -1,4 +1,4 @@
-#include "causalOT_types.h"
+#include "pforOT_types.h"
 
 matrix weighted_mean_output(const matrix & Y,
                             const matrix & gamma) {

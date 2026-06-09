@@ -14,7 +14,7 @@ testthat::test_that("LogSumExp works", {
     # }
   }
   x <- stats::rnorm(100)
-  cpp <- causalOT:::logSumExp(x)
+  cpp <- pforOT:::logSumExp(x)
   R <- log_sum_exp(x)
   
   testthat::expect_equal(cpp, R)
@@ -36,7 +36,7 @@ testthat::test_that("rowLogSumExp works", {
     # }
   }
   x <- matrix(stats::rnorm(100*1001), 100, 1001)
-  cpp <- causalOT:::rowLogSumExp(x)
+  cpp <- pforOT:::rowLogSumExp(x)
   R <- row_log_sum_exp(x)
   
   testthat::expect_equal(cpp, R)
@@ -58,7 +58,7 @@ testthat::test_that("colLogSumExp works", {
     # }
   }
   x <- matrix(stats::rnorm(100*1001), 100, 1001)
-  cpp <- causalOT:::colLogSumExp(x)
+  cpp <- pforOT:::colLogSumExp(x)
   R <- col_log_sum_exp(x)
   
   testthat::expect_equal(cpp, R)
@@ -73,7 +73,7 @@ testthat::test_that("entropy bal weights cpp works", {
     beta <- par_pos - par_neg
     
     lp <- A %*% beta
-    obj <- sum(abs(beta)) * delta + causalOT:::logSumExp(lp)
+    obj <- sum(abs(beta)) * delta + pforOT:::logSumExp(lp)
     return(obj)
   } 
   ebal_grad <- function(par, A, delta) {
@@ -84,7 +84,7 @@ testthat::test_that("entropy bal weights cpp works", {
     beta <- par_pos - par_neg
     
     lp <- A %*% beta
-    s <- causalOT:::logSumExp(lp)
+    s <- pforOT:::logSumExp(lp)
     cross_term <- crossprod(A, exp(lp - s))
     grad <- sign(par) * delta + c(cross_term, -cross_term)
     return(grad)
@@ -95,10 +95,10 @@ testthat::test_that("entropy bal weights cpp works", {
   delta <- 0.1
   var <- rep(0, 2 * d)
   
-  cpp_obj <- causalOT:::entBW_obj_(var, A, delta)
+  cpp_obj <- pforOT:::entBW_obj_(var, A, delta)
   R_obj <- ebal_obj(var, A, delta)
   
-  cpp_grad <- causalOT:::entBW_grad_(var, A, delta)
+  cpp_grad <- pforOT:::entBW_grad_(var, A, delta)
   R_grad <- ebal_grad(var, A, delta)
   
   testthat::expect_equal(cpp_obj, R_obj)
@@ -125,11 +125,11 @@ testthat::test_that("entropy bal weights cpp works", {
 #       obj <- -sum(par_A) * delta - sum(target * beta)
 #     }
 #     obj <- obj -
-#       lambda * causalOT:::logSumExp(lp) +
+#       lambda * pforOT:::logSumExp(lp) +
 #       sum(b * g)
 #     # print(sum(b * g))
 #     # print(-sum(par_A) * delta )
-#     # print(lambda * causalOT:::logSumExp(lp))
+#     # print(lambda * pforOT:::logSumExp(lp))
 #     # print(obj)
 #     return(-obj)
 #   } 
@@ -147,11 +147,11 @@ testthat::test_that("entropy bal weights cpp works", {
 #     A_lp <- c(source %*% beta)/lambda
 #     lp <- (matrix(g , n, m, byrow = TRUE) - cost)/lambda 
 #     if ( length(A_lp) >0 ) lp <- lp - A_lp
-#     s <- causalOT:::logSumExp(lp)
+#     s <- pforOT:::logSumExp(lp)
 #     lp <- lp - s
 #     g_grad <- b - c(colSums(exp(lp )))
 #     if(length(A_lp) > 0) {
-#       cross <- crossprod(source, c(exp(causalOT:::rowLogSumExp(lp ))))
+#       cross <- crossprod(source, c(exp(pforOT:::rowLogSumExp(lp ))))
 #       grad_A <- -sign(par_A) * delta + c(-target,  target) + c(cross, -cross)
 #       # print(-sign(par_A) * delta)
 #       # print(cross)
@@ -173,7 +173,7 @@ testthat::test_that("entropy bal weights cpp works", {
 #   lambda <- 10
 #   var <- as.double(1:(m + 2 * d))
 #   
-#   cpp_obj <- causalOT:::cotEntropy_obj_(vars_ =var, source_ = A, 
+#   cpp_obj <- pforOT:::cotEntropy_obj_(vars_ =var, source_ = A, 
 #                                         target_ = colMeans(A),
 #                                         cost_ = cost, 
 #                                         b_ = b,
@@ -181,7 +181,7 @@ testthat::test_that("entropy bal weights cpp works", {
 #   R_obj <- cot_obj(var, A, colMeans(A), cost, b,
 #                    delta, lambda)
 #   
-#   cpp_grad <- causalOT:::cotEntropy_grad_(vars_ =var, source_ = A, 
+#   cpp_grad <- pforOT:::cotEntropy_grad_(vars_ =var, source_ = A, 
 #                                           target_ = colMeans(A),
 #                                           cost_ = cost, 
 #                                           b_ = b,
@@ -192,14 +192,14 @@ testthat::test_that("entropy bal weights cpp works", {
 #   testthat::expect_equal(cpp_obj, R_obj)
 #   testthat::expect_equal(cpp_grad, R_grad)
 #   
-#   # crossprod_A <- Matrix::crossprod(causalOT:::vec_to_row_constraints(n,m),A)
+#   # crossprod_A <- Matrix::crossprod(pforOT:::vec_to_row_constraints(n,m),A)
 #   # 
-#   # QQ <- cbind(Matrix::t(causalOT:::vec_to_col_constraints(n,m)),
+#   # QQ <- cbind(Matrix::t(pforOT:::vec_to_col_constraints(n,m)),
 #   #             -crossprod_A, crossprod_A
 #   #             )
 #   # pf <- c(b, rep(-delta, 2 * d))
 #   # 
-#   # testthat::expect_equal(causalOT:::cotDual_obj_(var, QQ, c(cost), pf, lambda, "entropy"), cpp_obj)
+#   # testthat::expect_equal(pforOT:::cotDual_obj_(var, QQ, c(cost), pf, lambda, "entropy"), cpp_obj)
 #   
 #   # without bf
 #   set.seed(23048)
@@ -213,7 +213,7 @@ testthat::test_that("entropy bal weights cpp works", {
 #   lambda <- 10
 #   var <- rep(0, m )
 #   
-#   cpp_obj <- causalOT:::cotEntropy_obj_(vars_ =var, source_ = A, 
+#   cpp_obj <- pforOT:::cotEntropy_obj_(vars_ =var, source_ = A, 
 #                                         target_ = colMeans(A),
 #                                         cost_ = cost, 
 #                                         b_ = b,
@@ -221,7 +221,7 @@ testthat::test_that("entropy bal weights cpp works", {
 #   R_obj <- cot_obj(var, A, colMeans(A), cost, b,
 #                     delta, lambda)
 #   
-#   cpp_grad <- causalOT:::cotEntropy_grad_(vars_ =var, source_ = A, 
+#   cpp_grad <- pforOT:::cotEntropy_grad_(vars_ =var, source_ = A, 
 #                                           target_ = colMeans(A),
 #                                           cost_ = cost, 
 #                                           b_ = b,
@@ -232,9 +232,9 @@ testthat::test_that("entropy bal weights cpp works", {
 #   testthat::expect_equal(cpp_obj, R_obj)
 #   testthat::expect_equal(cpp_grad, R_grad)
 #   
-#   # QQ <- Matrix::t(causalOT:::vec_to_col_constraints(n,m))
+#   # QQ <- Matrix::t(pforOT:::vec_to_col_constraints(n,m))
 #   # pf <- b
 #   # 
-#   # testthat::expect_equal(causalOT:::cotDual_obj_(var, QQ, c(cost), pf, lambda, "entropy"), cpp_obj)
+#   # testthat::expect_equal(pforOT:::cotDual_obj_(var, QQ, c(cost), pf, lambda, "entropy"), cpp_obj)
 #   
 # })

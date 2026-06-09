@@ -30,7 +30,7 @@ obs.study$gen_data()
 obs.study$get_n()
 }
 \section{Super class}{
-\code{\link[causalOT:DataSim]{causalOT::DataSim}} -> \code{LaLonde}
+\code{\link[pforOT:DataSim]{pforOT::DataSim}} -> \code{LaLonde}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -48,13 +48,13 @@ obs.study$get_n()
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_n"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_n'><code>causalOT::DataSim$get_n()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_p"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_p'><code>causalOT::DataSim$get_p()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_x"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_x'><code>causalOT::DataSim$get_x()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_x0"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_x0'><code>causalOT::DataSim$get_x0()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_x1"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_x1'><code>causalOT::DataSim$get_x1()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_y"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_y'><code>causalOT::DataSim$get_y()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="causalOT" data-topic="DataSim" data-id="get_z"><a href='../../causalOT/html/DataSim.html#method-DataSim-get_z'><code>causalOT::DataSim$get_z()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_n"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_n'><code>pforOT::DataSim$get_n()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_p"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_p'><code>pforOT::DataSim$get_p()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_x"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_x'><code>pforOT::DataSim$get_x()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_x0"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_x0'><code>pforOT::DataSim$get_x0()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_x1"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_x1'><code>pforOT::DataSim$get_x1()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_y"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_y'><code>pforOT::DataSim$get_y()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="pforOT" data-topic="DataSim" data-id="get_z"><a href='../../pforOT/html/DataSim.html#method-DataSim-get_z'><code>pforOT::DataSim$get_z()</code></a></span></li>
 </ul>
 </details>
 }}

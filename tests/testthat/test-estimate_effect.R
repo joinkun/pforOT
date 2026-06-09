@@ -1,10 +1,10 @@
 testthat::test_that("bp works, ATE", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   testthat::skip_on_cran()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -51,8 +51,8 @@ testthat::test_that("bp works, ATE", {
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1,
                          predictions1)
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1 - tau_est_sep@augmentedData$y_hat_0, delta_bp)
-  testthat::expect_equal(causalOT:::renormalize(w),
-                         causalOT:::renormalize(tau_est_sep@augmentedData$weights))
+  testthat::expect_equal(pforOT:::renormalize(w),
+                         pforOT:::renormalize(tau_est_sep@augmentedData$weights))
   
   
   # augmented 
@@ -73,12 +73,12 @@ testthat::test_that("bp works, ATE", {
 })
 
 testthat::test_that("bp works, ATT", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   testthat::skip_on_cran()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -125,18 +125,18 @@ testthat::test_that("bp works, ATT", {
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1,
                          predictions1)
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1 - tau_est_sep@augmentedData$y_hat_0, delta_bp)
-  testthat::expect_equal(causalOT:::renormalize(w),
-                         causalOT:::renormalize(tau_est_sep@augmentedData$weights))
+  testthat::expect_equal(pforOT:::renormalize(w),
+                         pforOT:::renormalize(tau_est_sep@augmentedData$weights))
   
 })
 
 testthat::test_that("bp works, ATC", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   testthat::skip_on_cran()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -183,17 +183,17 @@ testthat::test_that("bp works, ATC", {
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1,
                          predictions1)
   testthat::expect_equal(tau_est_sep@augmentedData$y_hat_1 - tau_est_sep@augmentedData$y_hat_0, delta_bp)
-  testthat::expect_equal(causalOT:::renormalize(w),
-                         causalOT:::renormalize(tau_est_sep@augmentedData$weights))
+  testthat::expect_equal(pforOT:::renormalize(w),
+                         pforOT:::renormalize(tau_est_sep@augmentedData$weights))
   
 })
 
 testthat::test_that("estimate effect works lm, ATT", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -351,11 +351,11 @@ testthat::test_that("estimate effect works lm, ATT", {
 })
 
 testthat::test_that("estimate effect works lm, ATC", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -502,11 +502,11 @@ testthat::test_that("estimate effect works lm, ATC", {
 })
 
 testthat::test_that("estimate effect works lm, ATE", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -665,11 +665,11 @@ testthat::test_that("estimate effect works lm, ATE", {
 
 
 testthat::test_that("ATT give proper var",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -709,11 +709,11 @@ testthat::test_that("ATT give proper var",{
 })
 
 testthat::test_that("ATT give proper var lm",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -754,11 +754,11 @@ testthat::test_that("ATT give proper var lm",{
 })
 
 testthat::test_that("ATC give proper var",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6
@@ -798,11 +798,11 @@ testthat::test_that("ATC give proper var",{
 })
 
 testthat::test_that("ATC give proper var lm",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(9867)
   
   #### Load Packages ####
-  library(causalOT)
+  library(pforOT)
   
   #### Sim param ####
   n <- 2^6

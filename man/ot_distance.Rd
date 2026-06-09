@@ -20,7 +20,8 @@ ot_distance(
   online.cost = "auto",
   diameter = NULL,
   niter = 1000,
-  tol = 1e-07
+  tol = 1e-07,
+  df = NULL
 )
 
 \method{ot_distance}{causalWeights}(
@@ -35,7 +36,8 @@ ot_distance(
   online.cost = "auto",
   diameter = NULL,
   niter = 1000,
-  tol = 1e-07
+  tol = 1e-07,
+  df = NULL
 )
 
 \method{ot_distance}{matrix}(
@@ -50,7 +52,8 @@ ot_distance(
   online.cost = "auto",
   diameter = NULL,
   niter = 1000,
-  tol = 1e-07
+  tol = 1e-07,
+  df = NULL
 )
 
 \method{ot_distance}{array}(
@@ -65,7 +68,8 @@ ot_distance(
   online.cost = "auto",
   diameter = NULL,
   niter = 1000,
-  tol = 1e-07
+  tol = 1e-07,
+  df = NULL
 )
 
 \method{ot_distance}{torch_tensor}(
@@ -80,7 +84,8 @@ ot_distance(
   online.cost = "auto",
   diameter = NULL,
   niter = 1000,
-  tol = 1e-07
+  tol = 1e-07,
+  df = NULL
 )
 }
 \arguments{

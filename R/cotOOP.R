@@ -487,6 +487,7 @@ Measure_ <- R6::R6Class("Measure", # change name later for Roxygen purposes
  )},
  private = {list(
    # values
+   .df = NULL, # for cost functions
    data_ = "torch_tensor",
    init_data_ = "torch_tensor",
    init_weights_ = "torch_tensor",
@@ -802,8 +803,8 @@ setup_arguments = function(lambda, delta,
                            cost.online = "auto",
                            debias = TRUE,
                            diameter = NULL, ot_niter = 1000L,
-                           ot_tol = 1e-3) {
-  
+                           ot_tol = 1e-3, df = NULL) {
+  private$.df <- df
   prob_names <- ls(private$problems)
   if(private$args_set) warning("OT problems already set up. This function will erase previous objects")
   problem_1 <- problem_2 <- measure_1 <- measure_2 <- NULL
@@ -826,7 +827,7 @@ setup_arguments = function(lambda, delta,
                                       tensorized = cost.online,
                                       diameter = diameter,
                                       device = self$device,
-                                      dtype = self$dtype)
+                                      dtype = self$dtype, df = private$.df)
     if(not_warned && isTRUE(!(device_vector == measure_1$device)) ){
       warning("All measures not on same device. This could slow things down.")
       not_warned <- FALSE
@@ -1235,6 +1236,7 @@ setup_arguments = function(lambda, delta,
  )},
  private = {list(
    # objects
+   .df = NULL, # data.frame of the data, if any
    args_set = "logical",
    final_loss = "list",
    iterations_run = "list",
@@ -2803,7 +2805,7 @@ NNM <- R6::R6Class(
                                cost.online = "auto",
                                debias = TRUE,
                                diameter = NULL, ot_niter = 1000L,
-                               ot_tol = 1e-5) {
+                               ot_tol = 1e-5, df = NULL) {
       super$setup_arguments(lambda = 0, delta = NULL,
                             grid.length = 1,
                             cost.function = cost.function,
@@ -2812,7 +2814,7 @@ NNM <- R6::R6Class(
                             debias = FALSE,
                             diameter = diameter,
                             ot_niter = ot_niter,
-                            ot_tol = ot_tol)
+                            ot_tol = ot_tol, df = df)
       ot <- private$ot_objects[[ls(private$ot_objects)[[1]] ]]
       # private$device <- ot$device
       private$C_xy <- ot$C_xy
@@ -3185,7 +3187,7 @@ cotDualTrain <- R6::R6Class(
                                cost.online = "auto",
                                debias = TRUE,
                                diameter = NULL, ot_niter = 1000L,
-                               ot_tol = 1e-5) {
+                               ot_tol = 1e-5, df = NULL) {
       super$setup_arguments(lambda, delta, 
                             grid.length,
                             cost.function, 
@@ -3193,7 +3195,8 @@ cotDualTrain <- R6::R6Class(
                             cost.online ,
                             debias,
                             diameter , ot_niter,
-                            ot_tol)
+                            ot_tol, df = df)
+      private$.df <- df
       
       m_add   <- ls(private$measures)
       p_add   <- ls(private$problems)

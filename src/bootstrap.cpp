@@ -1,4 +1,4 @@
-#include "causalOT_types.h"
+#include "pforOT_types.h"
 
 //[[Rcpp::export]]
 Rcpp::NumericVector bootStrap_(Rcpp::List & w_list, 

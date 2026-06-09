@@ -54,7 +54,7 @@ To re-run these simulations and/or recompile tables and figures, there are sever
 
 For just compiling tables and figures, here's all of the libraries that should be loaded:
 ```{r echo = TRUE, eval = FALSE}
-library(causalOT)
+library(pforOT)
 library(dplyr)
 library(ggplot2)
 library(scales)
@@ -66,7 +66,7 @@ library(tidyr)
 
 For re-running simulations, the following packages are needed
 ```{r echo = TRUE, eval = FALSE}
-library(causalOT)
+library(pforOT)
 library(doRNG)
 library(Rmosek)
 ```
@@ -196,8 +196,8 @@ This gives us a sense of how well chosen penalty parameter, $\lambda$, gives wei
 
 # Case study
 ## The data
-The data come from a study by Blum et al. looking at the effect of misoprostol vs. oxytocin at stopping post-partum hemorrhage. The data is described in the documents for the `causalOT` package which can be accessed by running
-`?causalOT::pph`. A more detailed description is found in the paper *Optimal transport weights for causal inference*.
+The data come from a study by Blum et al. looking at the effect of misoprostol vs. oxytocin at stopping post-partum hemorrhage. The data is described in the documents for the `pforOT` package which can be accessed by running
+`?pforOT::pph`. A more detailed description is found in the paper *Optimal transport weights for causal inference*.
 
 ### Running the analysis
 The analysis can be run by running the following chunk with `eval = TRUE`
@@ -224,5 +224,5 @@ COT also has the best performance in terms of coverage!
 ```
 
 ## Conclusions
-This document reproduces the results for the paper *Optimal transport weights for causal inference* by Eric Dunipace. Any questions or concerns can be addressed by filing an issue at [https://github.com/ericdunipace/causalOT/issues](https://github.com/ericdunipace/causalOT/issues).
+This document reproduces the results for the paper *Optimal transport weights for causal inference* by Eric Dunipace. Any questions or concerns can be addressed by filing an issue at [https://github.com/ericdunipace/pforOT/issues](https://github.com/ericdunipace/pforOT/issues).
 

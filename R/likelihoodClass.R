@@ -147,7 +147,7 @@ function(x,...) {
 #' 
 #' @include calc_weight.R
 #'
-#' @return object of class [causalWeights][causalOT::causalWeights-class]
+#' @return object of class [causalWeights][pforOT::causalWeights-class]
 #' @keywords internal
 setMethod("cot_solve", signature(object = "likelihoodMethods"),
           function(object) {

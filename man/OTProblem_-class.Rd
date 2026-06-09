@@ -170,7 +170,8 @@ An R6 object of class "OTProblem"
   debias = TRUE,
   diameter = NULL,
   ot_niter = 1000L,
-  ot_tol = 0.001
+  ot_tol = 0.001,
+  df = NULL
 )}\if{html}{\out{</div>}}
 }
 

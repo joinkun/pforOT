@@ -1,10 +1,10 @@
 bibentry(
   bibtype    = "Manual",
-  title    = "causalOT: Optimal transport weights for causal inference",
+  title    = "pforOT: Optimal transport weights for causal inference",
   author   = person(given="Eric A.",family = "Dunipace"),
   year     = 2022,
   note     = "R package version 1.0",
   url      = "https://github.com/ericdunipace/causalOT",
-  key      = "causalOT-package",
+  key      = "pforOT-package",
   mheader = "To cite causalOT in publications use:"
 )

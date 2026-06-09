@@ -7,15 +7,15 @@ testthat::test_that("Likelihood objects form", {
   z <- rbinom(n, 1, prob = 0.5)
   weights <- rep(1/n,n)
   
-  data <-causalOT::dataHolder(x = x, z = z)
+  data <-pforOT::dataHolder(x = x, z = z)
   
   
-  testthat::expect_silent(likm <- causalOT:::likelihoodMethods(data,
+  testthat::expect_silent(likm <- pforOT:::likelihoodMethods(data,
                                estimand = "ATT",
                                method = "Logistic",
                                options = list(NULL)))
   
-  testthat::expect_silent(likm <- causalOT:::likelihoodMethods(data,
+  testthat::expect_silent(likm <- pforOT:::likelihoodMethods(data,
                  estimand = "ATT",
                  method = "Logistic"))
   
@@ -23,12 +23,12 @@ testthat::test_that("Likelihood objects form", {
                          "method", "solver", "solver.options")))
   
   
-  testthat::expect_silent(likm <- causalOT:::likelihoodMethods(data,
+  testthat::expect_silent(likm <- pforOT:::likelihoodMethods(data,
                                estimand = "ATT",
                                method = "CBPS",
                                options = list(NULL)))
   
-  testthat::expect_silent(likm <- causalOT:::likelihoodMethods(data,
+  testthat::expect_silent(likm <- pforOT:::likelihoodMethods(data,
                                estimand = "ATT",
                                method = "CBPS"))
   
@@ -48,14 +48,14 @@ testthat::test_that("CBPS works", {
   z <- rbinom(n, 1, prob = 0.5)
   weights <- rep(1/n,n)
   
-  data <-causalOT::dataHolder(x = x, z = z)
-  likm <- causalOT:::likelihoodMethods(data,
+  data <-pforOT::dataHolder(x = x, z = z)
+  likm <- pforOT:::likelihoodMethods(data,
                                        estimand = "ATT",
                                        method = "CBPS",
                                        options = list(NULL))
   
   mess <- testthat::capture_output(test <- likm@solver(likm))
-  testthat::expect_equal(likm@solver, causalOT:::cbps_optimizer)
+  testthat::expect_equal(likm@solver, pforOT:::cbps_optimizer)
   
 })
 
@@ -68,10 +68,10 @@ testthat::test_that("logistic works", {
   z <- rbinom(n, 1, prob = 0.5)
   weights <- rep(1/n,n)
   
-  data <-causalOT::dataHolder(x = x, z = z)
+  data <-pforOT::dataHolder(x = x, z = z)
   
   testthat::expect_silent({
-  likm <- causalOT:::likelihoodMethods(data,
+  likm <- pforOT:::likelihoodMethods(data,
                                        estimand = "ATT",
                                        method = "Logistic",
                                        options = list(NULL))
@@ -79,14 +79,14 @@ testthat::test_that("logistic works", {
   test <- likm@solver(likm)
   
   
-  likm <- causalOT:::likelihoodMethods(data,
+  likm <- pforOT:::likelihoodMethods(data,
                                        estimand = "ATC",
                                        method = "Logistic",
                                        options = list(NULL))
   
   test <- likm@solver(likm)
   
-  likm <- causalOT:::likelihoodMethods(data,
+  likm <- pforOT:::likelihoodMethods(data,
                                        estimand = "ATE",
                                        method = "Logistic",
                                        options = list(NULL))
@@ -104,10 +104,10 @@ testthat::test_that("probit works", {
   z <- rbinom(n, 1, prob = 0.5)
   weights <- rep(1/n,n)
   
-  data <-causalOT::dataHolder(x = x, z = z)
+  data <-pforOT::dataHolder(x = x, z = z)
   
   testthat::expect_silent({
-    likm <- causalOT:::likelihoodMethods(data,
+    likm <- pforOT:::likelihoodMethods(data,
                                          estimand = "ATT",
                                          method = "Probit",
                                          options = list(NULL))
@@ -115,14 +115,14 @@ testthat::test_that("probit works", {
     test <- likm@solver(likm)
     
     
-    likm <- causalOT:::likelihoodMethods(data,
+    likm <- pforOT:::likelihoodMethods(data,
                                          estimand = "ATC",
                                          method = "Probit",
                                          options = list(NULL))
     
     test <- likm@solver(likm)
     
-    likm <- causalOT:::likelihoodMethods(data,
+    likm <- pforOT:::likelihoodMethods(data,
                                          estimand = "ATE",
                                          method = "Probit",
                                          options = list(NULL))

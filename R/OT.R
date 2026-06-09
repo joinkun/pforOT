@@ -16,16 +16,19 @@ OT <- R6::R6Class("OT",
     diameter = "torch_tensor",
     dtype = "torch_dtype",
     tensorized = "logical",
+    df = "ANY",
     initialize = function(x, y, a = NULL, b = NULL, penalty, 
                           cost_function = NULL, p = 2, debias = TRUE, tensorized = "auto",
-                          diameter=NULL, device = NULL, dtype = NULL) {
+                          diameter=NULL, device = NULL, dtype = NULL, df = NULL) {
       # browser()
       if(missing(penalty) || is.null(penalty) || is.na(penalty) || penalty < 0) {
         stop("Must specify a penalty > 0!")
       } else {
         penalty <- as.double(penalty)
       }
-      
+      private$.df <- df
+      self$df <- df
+
       # check if should run online version in keops
       tensorized <- private$is_tensorized(tensorized, x, y)
       
@@ -72,7 +75,7 @@ OT <- R6::R6Class("OT",
       #   }
       # }
       
-      # setup data
+      # setup df
       if ( ! inherits(x, "torch_tensor")) {
         x <- torch::torch_tensor(x, dtype = self$dtype)$contiguous()
       }
@@ -90,13 +93,13 @@ OT <- R6::R6Class("OT",
       if(!tensorized) self$device <- torch::torch_device("cpu") # avoids copying matrices more than needed
       
       # setup costs
-      C_xy <- cost(x, y$detach(), p = p, tensorized = tensorized, cost_function = cost_function)
-      C_yx <- cost(y, x$detach(), p = p, tensorized = tensorized, cost_function = cost_function)
+      C_xy <- cost(x, y$detach(), p = p, tensorized = tensorized, cost_function = cost_function, df = private$.df)
+      C_yx <- cost(y, x$detach(), p = p, tensorized = tensorized, cost_function = cost_function, df = private$.df)
       C_xy$to_device <- self$device
       C_yx$to_device <- self$device
       if(debias) {
-        C_xx <- cost(x, x$detach(), p = p, tensorized = tensorized, cost_function = cost_function)
-        C_yy <- cost(y, y$detach(), p = p, tensorized = tensorized, cost_function = cost_function)
+        C_xx <- cost(x, x$detach(), p = p, tensorized = tensorized, cost_function = cost_function, df = private$.df)
+        C_yy <- cost(y, y$detach(), p = p, tensorized = tensorized, cost_function = cost_function, df = private$.df)
         C_xx$to_device <- self$device
         C_yy$to_device <- self$device
       } else {
@@ -269,6 +272,7 @@ OT <- R6::R6Class("OT",
     }
   ),
   private = list(
+    .df = NULL,
     a_ = "torch_tensor",
     b_ = "torch_tensor",
     a_log = "torch_tensor",
@@ -303,7 +307,7 @@ OT <- R6::R6Class("OT",
       # browser()
       diam_cost <- cost(torch::torch_vstack(list(x$max(1)[[1]]$view(c(1,-1)), x$min(1)[[1]]$view(c(1,-1)))), 
                         torch::torch_vstack(list(y$max(1)[[1]]$view(c(1,-1)), y$min(1)[[1]]$view(c(1,-1)))), 
-                        p = p, tensorized = tensorized, cost_function = cost_function)
+                        p = p, tensorized = tensorized, cost_function = cost_function, df = private$.df)
       if (tensorized) {
         diameter <- max(diam_cost$data)$item() 
       } else {
@@ -356,7 +360,7 @@ log_weights.numeric <- function(a) {
 
 softmin_tensorized <- function(eps, C_xy, y_potential, b_log) {
   return ( -eps * ( torch::torch_add(y_potential / eps, b_log) - C_xy$data / eps )$logsumexp(2) )
-  # softmin_jit(eps, C_xy$data, y_potential, b_log)
+  # softmin_jit(eps, C_xy$df, y_potential, b_log)
 }
   
 # softmin_jit <- torch::jit_trace(
@@ -1006,7 +1010,7 @@ function() {
     hessian <- self$hessian(nonzero = TRUE)
     # 
     # 
-    # C <- C_obj$data
+    # C <- C_obj$df
     # 
     # # first calculate variance of derivative
     # K   <- (1.0 - ( (f[nz_a]$view(c(nn,1)) + g[nz_b]$view(c(1,mm)) - C[nz_a, nz_b]) / lambda)$exp())^2 *
@@ -1143,7 +1147,7 @@ sinkhorn_dist <- function(OT) {
   #   raw_pi <- ot$primal()
   #   if(self$C_xy)
   #   loss <- sum(round_pi(raw_pi$xy, rep(1,self$n), rep(1,self$m)) *
-  #     a$view(c(self$n,1)) * b$view(c(1,self$m)) * selfC_xy$data)
+  #     a$view(c(self$n,1)) * b$view(c(1,self$m)) * selfC_xy$df)
   # }
   
   if (OT$debias) {
@@ -1326,25 +1330,25 @@ energy_dist_online <- torch::autograd_function(
                                            var = "X")
       
       
-      grad_data <- list(X = sv$x,
+      grad_df <- list(X = sv$x,
                         Y = sv$y,
                         B = sv$b,
                         eta = matrix(sv$a))
-      grad_data2 <- list(X = sv$x,
+      grad_df2 <- list(X = sv$x,
                          Y = sv$x,
                          B = sv$a,
                          eta = matrix(sv$a))
       if(rkeops_installed() && utils::packageVersion("rkeops") >= pkg_vers_number("2.0")) {
-        grad_data <- unname(grad_data)
-        grad_data2 <- unname(grad_data2)
+        grad_df <- unname(grad_df)
+        grad_df2 <- unname(grad_df2)
       } 
-      grads$x <- cost_grad_xy(grad_data)
+      grads$x <- cost_grad_xy(grad_df)
       
       cost_grad_xx <- rkeops::keops_grad(op = sv$forward_op,
                                          var = "X")
       
       
-      grads$x <- torch::torch_tensor(go * c(grads$x - cost_grad_xx(grad_data2)),
+      grads$x <- torch::torch_tensor(go * c(grads$x - cost_grad_xx(grad_df2)),
       device = sv$device$x,
       dtype = sv$dtype$x)
     }
@@ -1353,26 +1357,26 @@ energy_dist_online <- torch::autograd_function(
       cost_grad <- rkeops::keops_grad(op = sv$forward_op,
                                       var = "X")
       
-      grad_data <- list(X = sv$y,
+      grad_df <- list(X = sv$y,
                         Y = sv$x,
                         B = sv$a,
                         eta = matrix(sv$b))
       
-      grad_data2 <- list(X = sv$y,
+      grad_df2 <- list(X = sv$y,
                         Y = sv$y,
                         B = sv$b,
                         eta = matrix(sv$b))
       
       if(rkeops_installed() && utils::packageVersion("rkeops") >= pkg_vers_number("2.0")) {
-        grad_data <- unname(grad_data)
-        grad_data2 <- unname(grad_data2)
+        grad_df <- unname(grad_df)
+        grad_df2 <- unname(grad_df2)
       } 
       
-      grads$y <-  cost_grad(grad_data)
+      grads$y <-  cost_grad(grad_df)
       
       cost_grad_yy <- rkeops::keops_grad(op = sv$forward_op,
                                       var = "X")
-      grads$y <- torch::torch_tensor(go *c(grads$y - cost_grad_yy(grad_data2)),
+      grads$y <- torch::torch_tensor(go *c(grads$y - cost_grad_yy(grad_df2)),
       device = sv$device$y,
       dtype = sv$dtype$y)
     }
@@ -1476,32 +1480,32 @@ inf_sinkhorn_online <- torch::autograd_function(
     if (ctx$needs_input_grad$x) {
       cost_grad <- rkeops::keops_grad(op = saved_var$forward_op,
                                       var = "X")
-      grad_data <- list(X = saved_var$x,
+      grad_df <- list(X = saved_var$x,
                         Y = saved_var$y,
                         B = saved_var$b,
                         eta = matrix(saved_var$a))
       if(utils::packageVersion("rkeops") >= pkg_vers_number("2.0")) {
-        grad_data <- unname(grad_data)
+        grad_df <- unname(grad_df)
       } 
       grads$x <- 
-        torch::torch_tensor(go * cost_grad(grad_data), 
+        torch::torch_tensor(go * cost_grad(grad_df), 
                   dtype = saved_var$dtype$x,
                   device = saved_var$device$x)
     }
     if (ctx$needs_input_grad$y) {
       cost_grad <- rkeops::keops_grad(op = saved_var$forward_op,
                                       var = "X")
-      grad_data <- list(X = saved_var$y,
+      grad_df <- list(X = saved_var$y,
                         Y = saved_var$x,
                         B = saved_var$a,
                         eta =  matrix(saved_var$b))
       
       if(rkeops_installed() && utils::packageVersion("rkeops") >= pkg_vers_number("2.0")) {
-        grad_data <- unname(grad_data)
+        grad_df <- unname(grad_df)
       } 
       
       grads$x <- 
-        torch::torch_tensor(go * cost_grad(grad_data),
+        torch::torch_tensor(go * cost_grad(grad_df),
             dtype = saved_var$dtype$y,
             device = saved_var$device$y)
     }
@@ -1532,7 +1536,7 @@ transportationMatrix <- function(x = NULL, z = NULL, weights = NULL,
                                  cost = NULL,
                                  debias = FALSE,
                                  diameter=NULL,
-                                 niter = 1000, tol = 1e-7) {
+                                 niter = 1000, tol = 1e-7, df = NULL) {
   
   #sets up the attribute names
   tm_attr_names <- c("dual", "lambda", "debias",
@@ -1558,7 +1562,7 @@ transportationMatrix <- function(x = NULL, z = NULL, weights = NULL,
   stopifnot(inherits(weights, "causalWeights"))
   
   cw <- weights
-  dh <- dataHolder(x = x, z = z)
+  dh <- dfHolder(x = x, z = z)
   n <- get_n(dh)
   
   if(is.null(lambda) || is.na(lambda)) {
@@ -1577,14 +1581,14 @@ transportationMatrix <- function(x = NULL, z = NULL, weights = NULL,
                   penalty = lambda, 
                   cost = cost, p = p, debias = debias, 
                   tensorized = "tensorized",
-                  diameter = diameter)
+                  diameter = diameter, df = private$.df)
     ot1 <- OT$new(x = x1, y = y, 
                   a = cw@w1, b = b,
                   penalty = lambda, 
                   cost = cost, p = p, debias = debias, 
                   tensorized = "tensorized",
-                  diameter = diameter)
-    
+                  diameter = diameter, df = private$.df)
+
     ot0$sinkhorn_opt(niter, tol)
     ot1$sinkhorn_opt(niter, tol)
     
@@ -1684,7 +1688,7 @@ transportationMatrix <- function(x = NULL, z = NULL, weights = NULL,
                  penalty = lambda, 
                  cost = cost, p = p, debias = debias, 
                  tensorized = "tensorized",
-                 diameter = diameter)
+                 diameter = diameter, df = private$.df)
     ot$sinkhorn_opt(niter, tol)
     
     pot <- ot$potentials
@@ -1745,7 +1749,7 @@ loss_select <- function(ot, niter, tol) {
 
 #' Optimal Transport Distance
 #'
-#' @param x1 Either an object of class [causalOT::causalWeights-class] or a matrix of the covariates in the first sample
+#' @param x1 Either an object of class [pforOT::causalWeights-class] or a matrix of the covariates in the first sample
 #' @param x2 `NULL` or a matrix of the covariates in the second sample.
 #' @param a Empirical measure of the first sample. If NULL, assumes each observation gets equal mass. Ignored for objects of class causalWeights.
 #' @param b Empirical measure of the second sample. If NULL, assumes each observation gets equal mass. Ignored for objects of class causalWeights.
@@ -1782,7 +1786,7 @@ ot_distance <- function(x1, x2 = NULL,
          cost = NULL, 
          debias = TRUE, online.cost = "auto",
          diameter = NULL,
-         niter = 1000, tol = 1e-7) UseMethod("ot_distance")
+         niter = 1000, tol = 1e-7, df = NULL) UseMethod("ot_distance")
 
 # setGeneric("ot_distance", function(x1, x2 = NULL, 
 #                                    a = NULL, b = NULL,
@@ -1801,14 +1805,14 @@ ot_distance.causalWeights <- function(x1, x2 = NULL, a = NULL, b = NULL, penalty
          cost = NULL, 
          debias = TRUE, online.cost = "auto",
          diameter=NULL,
-         niter = 1000, tol = 1e-7) {
+         niter = 1000, tol = 1e-7, df = NULL) {
   
   
   stopifnot(inherits(x1, "causalWeights"))
   
   
   cw <- x1
-  dh <- x1@data
+  dh <- x1@df
   
   if(missing(penalty) || is.na(penalty) || is.null(penalty)) {
     warning("Penalty parameter not provided. Using estimated cost diameter as a penalty parameter.")
@@ -1835,26 +1839,26 @@ ot_distance.causalWeights <- function(x1, x2 = NULL, a = NULL, b = NULL, penalty
                        penalty = penalty, 
                        cost = cost, p = p, debias = debias, 
                        tensorized = online.cost,
-                       diameter = diameter)
+                       diameter = diameter, df = private$.df)
     ot1_init <- OT$new(x = x1, y = x, 
                        a = a1_init, b = b,
                        penalty = penalty, 
                        cost = cost, p = p, debias = debias, 
                        tensorized = online.cost,
-                       diameter = diameter)
-    
+                       diameter = diameter, df = private$.df)
+
     ot0 <- OT$new(x = x0, y = x, 
                   a = renormalize(cw@w0), b = b,
                   penalty = penalty, 
                   cost = cost, p = p, debias = debias, 
                   tensorized = online.cost,
-                  diameter = diameter)
+                  diameter = diameter, df = private$.df)
     ot1 <- OT$new(x = x1, y = x, 
                   a = renormalize(cw@w1), b = b,
                   penalty = penalty, 
                   cost = cost, p = p, debias = debias, 
                   tensorized = online.cost,
-                  diameter = diameter)
+                  diameter = diameter, df = private$.df)
     
     return(list(pre = c(control = as_numeric(loss_select(ot0_init, niter, tol)),
                         treated = as_numeric(loss_select(ot1_init, niter, tol))),
@@ -1879,14 +1883,14 @@ ot_distance.causalWeights <- function(x1, x2 = NULL, a = NULL, b = NULL, penalty
                     penalty = penalty, 
                     cost = cost, p = p, debias = debias, 
                     tensorized = online.cost,
-                    diameter = diameter)
+                    diameter = diameter, df = private$.df)
   
   ot_final <- OT$new(x = x0, y = x1, 
                      a = renormalize(cw@w0), b = renormalize(cw@w1),
                      penalty = penalty, 
                      cost = cost, p = p, debias = debias, 
                      tensorized = online.cost,
-                     diameter = diameter)
+                     diameter = diameter, df = private$.df)
   
   
   return(list(pre = as_numeric(loss_select(ot_init, niter, tol)),
@@ -1905,7 +1909,7 @@ ot_distance.causalWeights <- function(x1, x2 = NULL, a = NULL, b = NULL, penalty
 #   
 #   
 #   cw <- x1
-#   dh <- x1@data
+#   dh <- x1@df
 #   
 #   if(missing(penalty) || is.na(penalty) || is.null(penalty)) {
 #     warning("Penalty parameter not provided. Using estimated cost diameter as a penalty parameter.")
@@ -1997,14 +2001,15 @@ ot_dist_default <- function(x1, x2, a = NULL, b = NULL, penalty, p = 2,
                             cost = NULL, 
                             debias = TRUE, online.cost = "auto",
                             diameter=NULL,
-                            niter = 1000, tol = 1e-7) {
+                            niter = 1000, tol = 1e-7, df = NULL) {
   
+  print(ot_dist_default)
   ot <- OT$new(x = x1, y = x2, 
                a = a, b = b,
                penalty = penalty, 
                cost = cost, p = p, debias = debias, 
                tensorized = online.cost,
-               diameter = diameter)
+               diameter = diameter, df = df)
   
   return(as_numeric(loss_select(ot, niter, tol)))
 }

@@ -1,9 +1,9 @@
 ---
-title: "Using causalOT"
+title: "Using pforOT"
 author: Eric Dunipace
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using causalOT}
+  %\VignetteIndexEntry{Using pforOT}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,7 +13,7 @@ vignette: >
 
 
 ## Introduction
-`causalOT` was developed to reproduce the methods in [*Optimal transport methods for causal inference*](https://arxiv.org/abs/2109.01991). The functions in the package are built to construct weights to make distributions more same and estimate causal effects. We recommend using the Causal Optimal Transport methods since they are semi- to non-parametric. This document will describe some simple usages of the functions in the package and should be enough to get users started.
+`pforOT` was developed to reproduce the methods in [*Optimal transport methods for causal inference*](https://arxiv.org/abs/2109.01991). The functions in the package are built to construct weights to make distributions more same and estimate causal effects. We recommend using the Causal Optimal Transport methods since they are semi- to non-parametric. This document will describe some simple usages of the functions in the package and should be enough to get users started.
 
 ## Setting up the data
 The main functions of the package, `calc_weight` and `estimate_effect`, take arguments `x`, a numeric `matrix` of covariates; `z`, a treatment indicator in `c(0,1)`; and `y`, a numeric vector with the outcome data.
@@ -22,7 +22,7 @@ If easy to do, we can supply the necessary data directly.
 
 ```r
 # packages
-library(causalOT)
+library(pforOT)
 library(torch)
 
 # reproducible seeds
@@ -165,7 +165,7 @@ This fits a single weighted OLS model on the entire data.
 #### Barycentric projections
 An outcome model that is particular to this package is the function `barycentric_projection` that estimates, as the name implies, barycentric projections of the outcome data. To use this function, there are a couple of steps. Unlike the case for linear models with `lm`, we need to think carefully about what sample the data arise from.
 
-To use this function outside of the main causalOT functions, we would do
+To use this function outside of the main pforOT functions, we would do
 
 
 ```r
@@ -258,7 +258,7 @@ Diagnostics are also an important part of deciding whether the weights perform w
 3. Distributional balance
 
 #### 1. Effective sample size
-Typically, estimated samples sizes with weights are calculated as $\sum_i 1/w_i^2$ and gives us a measure of how much information is in the sample. The lower the effective sample size (ESS), the higher the variance, and the lower the sample size, the more weight a few individuals have. Of course, we can calculate this in `causalOT`!
+Typically, estimated samples sizes with weights are calculated as $\sum_i 1/w_i^2$ and gives us a measure of how much information is in the sample. The lower the effective sample size (ESS), the higher the variance, and the lower the sample size, the more weight a few individuals have. Of course, we can calculate this in `pforOT`!
 
 ```r
 ESS(weights)
@@ -298,7 +298,7 @@ We can see that all of the $k$ values are below the recommended 0.5, indicating 
 Many authors consider the standardized absolute mean balance as a marker for important balance: see [Stuart (2010)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2943670/). That is
 $$ \frac{|\overline{X}_c - \overline{X}_t| }{\sigma_{\text{pool}}},$$ where
 $\overline{X}_c$ is the mean in the controls, $\overline{X}_t$ is the mean in the treated, and $\sigma_{\text{pool}}$ is the pooled standard deviation.
-We offer such checks in `causalOT` as well.
+We offer such checks in `pforOT` as well.
 
 First, we consider pre-weighting mean balance between treatment groups
 

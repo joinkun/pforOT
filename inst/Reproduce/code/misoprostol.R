@@ -1,5 +1,5 @@
 #### Load Packages ####
-library(causalOT)
+library(pforOT)
 library(forcats)
 library(dplyr)
 library(ggplot2)
@@ -8,7 +8,7 @@ library(ggsci)
 # library(rlang)
 
 #### Load data ####
-data("pph", package = "causalOT")
+data("pph", package = "pforOT")
 # reticulate::use_python("/usr/bin/python3", required = TRUE)
 
 #### setup treatment indicators ####
@@ -108,8 +108,8 @@ miso_estimate <- function(pph, continuous.covar, binary.covar, outcome, tx.ind, 
     weights$NNM  = calc_weight(x = scaled_x, z = z,
                                estimand = estimand, method = "NNM")
     # browser()
-    # debugonce(causalOT:::grid_select, signature = signature(object = "ANY", w = "list"))
-    # debugonce(causalOT:::cot_solve, signature = signature(object = "gridSearch"))
+    # debugonce(pforOT:::grid_select, signature = signature(object = "ANY", w = "list"))
+    # debugonce(pforOT:::cot_solve, signature = signature(object = "gridSearch"))
     torch::torch_manual_seed(sample.int(.Machine$integer.max, 1))
     weights$COT =  calc_weight(x = scaled_x, z = z,
                                estimand = estimand, method = "COT",
@@ -218,8 +218,8 @@ miso_estimate <- function(pph, continuous.covar, binary.covar, outcome, tx.ind, 
   
     final.wass <- sapply(weights, function(w) {
       ot_distance(x1 = scaled_x[z==1,], x2 = scaled_x[z==0,],
-                  a = causalOT:::renormalize(w@w1), 
-                  b = causalOT:::renormalize(w@w0),
+                  a = pforOT:::renormalize(w@w1), 
+                  b = pforOT:::renormalize(w@w0),
                   p = 2, penalty = 0.05, diameter = max_cost)
     })
     

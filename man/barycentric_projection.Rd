@@ -86,19 +86,19 @@ overlap <- "low"
 design <- "A"
 estimate <- "ATT"
 power <- 2
-data <- causalOT::Hainmueller$new(n = n, p = pp,
+data <- pforOT::Hainmueller$new(n = n, p = pp,
 design = design, overlap = overlap)
 
 data$gen_data()
 
-weights <- causalOT::calc_weight(x = data,
+weights <- pforOT::calc_weight(x = data,
   z = NULL, y = NULL,
   estimand = estimate,
   method = "NNM")
   
  df <- data.frame(y = data$get_y(), z = data$get_z(), data$get_x())
   
- fit <- causalOT::barycentric_projection(y ~ ., data = df, 
+ fit <- pforOT::barycentric_projection(y ~ ., data = df, 
     weight = weights,
     separate.samples.on = "z",
     niter = 2)

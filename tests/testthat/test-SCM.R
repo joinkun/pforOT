@@ -15,14 +15,14 @@ testthat::test_that("SCM object forms", {
   lambda <- 10
   wlist <- list(a,a)
   
-  testthat::expect_output(scm <- causalOT:::SCM$new(source = x, target = y,
+  testthat::expect_output(scm <- pforOT:::SCM$new(source = x, target = y,
                       options = list(NULL)))
   
-  testthat::expect_output(scm <- causalOT:::SCM$new(source = x, target = y,
+  testthat::expect_output(scm <- pforOT:::SCM$new(source = x, target = y,
                                                     a = a, b = b,
                                                     options = list(NULL)))
   
-  testthat::expect_output(scm <- causalOT:::SCM$new(source = x, target = y,
+  testthat::expect_output(scm <- pforOT:::SCM$new(source = x, target = y,
                                                     options = list(polish = TRUE)))
   
   testthat::expect_true(scm$.__enclos_env__$private$solver$GetParams()$polish)
@@ -46,7 +46,7 @@ testthat::test_that("SCM object optimizes", {
   lambda <- 10
   wlist <- list(a,a)
   
-  testthat::expect_output(scm <- causalOT:::SCM$new(source = x, target = y,
+  testthat::expect_output(scm <- pforOT:::SCM$new(source = x, target = y,
                                                     options = list(NULL)))
   
   testthat::expect_output(w <- scm$solve())

@@ -2,9 +2,9 @@
 #' 
 #' This function will calculate the difference in means between treatment groups standardized by the pooled standard-deviation of the respective covariates.
 #'
-#' @param x Either a matrix, an object of class [causalOT::dataHolder-class], or an object of class DataSim
-#' @param z A integer vector denoting the treatments of each observations. Can be null if `x` is a DataSim object or already of class [causalOT::dataHolder-class].
-#' @param weights An object of class [causalWeights][causalOT::causalWeights-class].
+#' @param x Either a matrix, an object of class [pforOT::dataHolder-class], or an object of class DataSim
+#' @param z A integer vector denoting the treatments of each observations. Can be null if `x` is a DataSim object or already of class [pforOT::dataHolder-class].
+#' @param weights An object of class [causalWeights][pforOT::causalWeights-class].
 #' @param ... Not used at this time.
 #'
 #' @return A vector of mean balances

@@ -1,6 +1,6 @@
 testthat::test_that("cotProblem CBPS", {
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "CBPS"
@@ -9,7 +9,7 @@ testthat::test_that("cotProblem CBPS", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_silent(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_silent(gs <- pforOT:::cotProblem(data = data,
                               estimand = "ATT",
                               method = method,
                               options = options))
@@ -22,7 +22,7 @@ testthat::test_that("cotProblem CBPS", {
 
 testthat::test_that("cotProblem logistic", {
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "Logistic"
@@ -31,7 +31,7 @@ testthat::test_that("cotProblem logistic", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_silent(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_silent(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options))
@@ -44,7 +44,7 @@ testthat::test_that("cotProblem logistic", {
 
 testthat::test_that("cotProblem probit", {
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "Probit"
@@ -53,7 +53,7 @@ testthat::test_that("cotProblem probit", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_silent(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_silent(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options))
@@ -66,7 +66,7 @@ testthat::test_that("cotProblem probit", {
 
 testthat::test_that("cotProblem SBW", {
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "SBW"
@@ -75,7 +75,7 @@ testthat::test_that("cotProblem SBW", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  mess <- testthat::capture_output(gs <- causalOT:::cotProblem(data = data,
+  mess <- testthat::capture_output(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options))
@@ -88,7 +88,7 @@ testthat::test_that("cotProblem SBW", {
 
 testthat::test_that("cotProblem EBW", {
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "EntropyBW"
@@ -97,7 +97,7 @@ testthat::test_that("cotProblem EBW", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_silent(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_silent(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options))
@@ -109,9 +109,9 @@ testthat::test_that("cotProblem EBW", {
 })
 
 testthat::test_that("cotProblem COT", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "COT"
@@ -120,7 +120,7 @@ testthat::test_that("cotProblem COT", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_silent(testthat::expect_warning(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_silent(testthat::expect_warning(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options)))
@@ -132,9 +132,9 @@ testthat::test_that("cotProblem COT", {
 })
 
 testthat::test_that("cotProblem NNM", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(n=64)
+  hain <- pforOT:::Hainmueller$new(n=64)
   hain$gen_data()
   data <- dataHolder(hain)
   method <- "NNM"
@@ -143,7 +143,7 @@ testthat::test_that("cotProblem NNM", {
                  debias = TRUE,
                  torch.optimizer = torch::optim_lbfgs)
   
-  testthat::expect_warning(gs <- causalOT:::cotProblem(data = data,
+  testthat::expect_warning(gs <- pforOT:::cotProblem(data = data,
                                                       estimand = "ATT",
                                                       method = method,
                                                       options = options))

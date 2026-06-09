@@ -1,6 +1,6 @@
 testthat::test_that("measure forms", {
   testthat::skip_on_cran()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   x <- matrix(rnorm(100,10), 100, 10)
   m <- Measure(x = x)
   
@@ -109,7 +109,7 @@ testthat::test_that("measure forms", {
 testthat::test_that("OTProblem tests",{
   testthat::skip_on_cran()
   testthat::skip_on_ci()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   x  <- matrix(rnorm(128*2) + 5, 128, 2)
   m1 <- Measure(x = x)
@@ -171,7 +171,7 @@ testthat::test_that("OTProblem tests",{
     rlang::obj_address(m1)
   )
   
-  # debugonce(causalOT:::binaryop.OTProblem)
+  # debugonce(pforOT:::binaryop.OTProblem)
   ot_final <- ot - mult_check
   orig_final_address <- rlang::obj_address(ot_final)
   ot_final <- ot_final - 0.5 * ot_y
@@ -215,7 +215,7 @@ testthat::test_that("OTProblem tests",{
   
   # debugonce(ot_bary$setup_arguments)
   ot_bary$setup_arguments()
-  # debugonce(causalOT:::inf_sinkhorn_dist)
+  # debugonce(pforOT:::inf_sinkhorn_dist)
   
   testthat::expect_silent(
     ot_bary$solve(niter = 1, tol = 1e-4, torch_args = list(line_search_fn = "strong_wolfe"))
@@ -236,7 +236,7 @@ testthat::test_that("OTProblem tests",{
 testthat::test_that("weights adapatiation", {
   testthat::skip_on_cran()
   testthat::skip_on_ci()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   z  <- matrix(rnorm(64*2), 64, 2) + matrix(c(0,.5), 64,2, byrow = TRUE)
   x  <- matrix(rnorm(128*2), 128, 2)
@@ -360,7 +360,7 @@ testthat::test_that("weights adapatiation", {
 testthat::test_that("bary with muilt groups", {
   testthat::skip_on_cran()
   testthat::skip_on_ci()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   #bary center + two groups
   z  <- matrix(runif(64*2), 64, 2) + matrix(c(0,.5), 64,2, byrow = TRUE)

@@ -1,7 +1,7 @@
 #### convergence and ci ####
 
 #### load packages ####
-library(causalOT)
+library(pforOT)
 library(dplyr)
 library(ggplot2)
 library(scales)

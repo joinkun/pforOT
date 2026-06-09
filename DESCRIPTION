@@ -1,4 +1,4 @@
-Package: causalOT
+Package: pforOT
 Type: Package
 Title: Optimal Transport Weights for Causal Inference
 Version: 1.0.2.9000
@@ -32,7 +32,8 @@ Imports:
     rlang,
     sandwich,
     torch,
-    utils
+    utils,
+    lightgbm
 LinkingTo: 
     BH (>= 1.66.0),
     Rcpp (>= 0.12.0),
@@ -53,7 +54,7 @@ Depends:
     R (>= 3.5.0)
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LazyData: true
 VignetteBuilder: knitr
 Collate: 
@@ -67,7 +68,6 @@ Collate:
     'balanceFunctions.R'
     'barycentricProjection.R'
     'calc_weight.R'
-    'causalOT-package.R'
     'cost_functions.R'
     'scmClass.R'
     'gridSearch.R'
@@ -76,6 +76,7 @@ Collate:
     'cot_opts.R'
     'likelihoodClass.R'
     'mean_balance.R'
+    'pforOT-package.R'
     'summary.R'
     'supportedMethods.R'
     'treatment_effect.R'

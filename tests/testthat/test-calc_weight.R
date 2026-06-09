@@ -1,5 +1,5 @@
 testthat::test_that("calc_weight works", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   set.seed(23483)
   n <- 2^5
@@ -8,7 +8,7 @@ testthat::test_that("calc_weight works", {
   design <- "A"
   estimate <- "ATE"
   #### get simulation functions ####
-  data <- causalOT::Hainmueller$new(n = n, p = p,
+  data <- pforOT::Hainmueller$new(n = n, p = p,
         design = design, overlap = overlap)
   data$gen_data()
   weights <- calc_weight(x = data,

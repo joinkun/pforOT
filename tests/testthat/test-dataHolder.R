@@ -6,16 +6,16 @@ testthat::test_that("dataHolder object forms with matrix", {
   z <- rbinom(n, 1, prob = 0.5)
   weights <- rep(1/n,n)
   
-  testthat::expect_silent(dh <-causalOT::dataHolder(x = x, z = z))
-  testthat::expect_silent(dh <-causalOT::dataHolder(x = x, z = z,
+  testthat::expect_silent(dh <-pforOT::dataHolder(x = x, z = z))
+  testthat::expect_silent(dh <-pforOT::dataHolder(x = x, z = z,
                                                     y = NULL))
-  testthat::expect_silent(dh <-causalOT::dataHolder(x = x, z = z,
+  testthat::expect_silent(dh <-pforOT::dataHolder(x = x, z = z,
                                                     y = NULL,
                                                     weights = weights ))
   
-  testthat::expect_error(dh <-causalOT::dataHolder(x = x))
-  testthat::expect_error(dh <-causalOT::dataHolder(z = z))
-  testthat::expect_error(dh <-causalOT::dataHolder(y = NULL))
+  testthat::expect_error(dh <-pforOT::dataHolder(x = x))
+  testthat::expect_error(dh <-pforOT::dataHolder(z = z))
+  testthat::expect_error(dh <-pforOT::dataHolder(y = NULL))
   
   
 })
@@ -30,13 +30,13 @@ testthat::test_that("dataHolder object forms with df2dataHolder", {
   weights <- rep(1/n,n)
   df <- data.frame(x, z, y)
   
-  testthat::expect_silent(data <- causalOT:::df2dataHolder(treatment.formula = "z ~ .", outcome.formula = NA_character_, data = df))
+  testthat::expect_silent(data <- pforOT:::df2dataHolder(treatment.formula = "z ~ .", outcome.formula = NA_character_, data = df))
   
   testthat::expect_true("y" %in% colnames(data@x))
   
   testthat::expect_true("terms" %in% names(attributes(data)))
   
-  testthat::expect_silent(data <- causalOT:::df2dataHolder(treatment.formula = "z ~ .", outcome.formula = "y ~ .", data = df))
+  testthat::expect_silent(data <- pforOT:::df2dataHolder(treatment.formula = "z ~ .", outcome.formula = "y ~ .", data = df))
   
   testthat::expect_true(!("y" %in% colnames(data@x)))
   
@@ -46,7 +46,7 @@ testthat::test_that("dataHolder object forms with df2dataHolder", {
 testthat::test_that("dataHolder forms with DataSim objects", {
   
   set.seed(12312)
-  hain <- causalOT:::Hainmueller$new(128)
+  hain <- pforOT:::Hainmueller$new(128)
   hain$gen_data()
   testthat::expect_silent(
     data <- dataHolder(hain)

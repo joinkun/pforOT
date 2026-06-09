@@ -1,7 +1,7 @@
 #### Hainmueller Simulations ####
 
 #### load packages ####
-library(causalOT)
+library(pforOT)
 library(dplyr)
 library(tidyr)
 library(ggplot2)

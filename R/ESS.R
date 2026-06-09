@@ -3,17 +3,17 @@
 #' Effective Sample Size
 #'
 #' @param x Either a vector of weights summing to 1 or an object of class
-#' [causalWeights][causalOT::causalWeights-class]
+#' [causalWeights][pforOT::causalWeights-class]
 #' 
 #' @details Calculates the effective sample size as described by Kish (1965). 
 #' However, this calculation has some problems and the [PSIS()]
 #' function should be used instead.
 #'
 #' @return Either a number denoting the effective sample size or if `x` is of class
-#' [causalWeights][causalOT::causalWeights-class], then returns a list of both values in the treatment
+#' [causalWeights][pforOT::causalWeights-class], then returns a list of both values in the treatment
 #' and control groups.
 #' 
-#' @seealso [PSIS()][causalOT::PSIS]
+#' @seealso [PSIS()][pforOT::PSIS]
 #' 
 #' @export
 #' 
@@ -34,7 +34,7 @@ setMethod("ESS", signature(x = "numeric"),
     }          
 )
 
-#' @describeIn ESS ESS method for objects of class [causalWeights][causalOT::causalWeights-class]
+#' @describeIn ESS ESS method for objects of class [causalWeights][pforOT::causalWeights-class]
 #' @method ESS causalWeights
 #' @include weightsClass.R
 setMethod("ESS", signature = signature(x = "causalWeights"),

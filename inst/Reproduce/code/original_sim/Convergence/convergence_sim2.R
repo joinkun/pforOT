@@ -35,10 +35,10 @@ if(!any(grepl("rkeops", installed.packages()[,1]))) remotes::install_github("get
 # stopifnot("Pykeops can't recognize CUDA" = pykeops$pykeopsconfig$gpu_available)
 
 # install COT
-if(!require("causalOT")) remotes::install_github("ericdunipace/causalOT", ref = "s4class", quick = TRUE, force = TRUE)
+if(!require("pforOT")) remotes::install_github("ericdunipace/pforOT", ref = "s4class", quick = TRUE, force = TRUE)
 
 # load packages
-library(causalOT)
+library(pforOT)
 library(foreach)
 library(doRNG)
 library(doParallel)
@@ -102,7 +102,7 @@ result <-
       rkeops::compile4float32()
       rkeops::use_gpu()
     }
-    worker_res <- foreach(i=1:worker_iteration, .errorhandling = "pass", .packages=c('causalOT'), .export = "estimand") %do% {
+    worker_res <- foreach(i=1:worker_iteration, .errorhandling = "pass", .packages=c('pforOT'), .export = "estimand") %do% {
       cat(c("Worker:",nw,", Iteration number", i,"of",worker_iteration,"\n"))
       
       
@@ -141,8 +141,8 @@ result <-
         y <- y_full[c(t_sub,c_sub)]
         ps1   <- ps1_full[1:n]
         ps0   <- ps0_full[1:n]
-        h1  <- causalOT:::renormalize(1/ps1)
-        h0  <- causalOT:::renormalize(1/(1-ps0))
+        h1  <- pforOT:::renormalize(1/ps1)
+        h0  <- pforOT:::renormalize(1/(1-ps0))
         
         N <- n * 2
         n0 <- n1 <- n
@@ -203,8 +203,8 @@ result <-
           estimate.aug <- coef(est.aug)
           rm(est.aug)
           
-          w0 <- causalOT:::renormalize(weights@w0)
-          w1 <- causalOT:::renormalize(weights@w1)
+          w0 <- pforOT:::renormalize(weights@w0)
+          w1 <- pforOT:::renormalize(weights@w1)
           
           rm(weights)
           

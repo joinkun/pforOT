@@ -1,6 +1,6 @@
 # combines raw simulations into one data.frame for each simulation
 
-library(causalOT)
+library(pforOT)
 
 #### load and edit ####
 loadEdit <- function(files, data, design, overlap , n, p) {

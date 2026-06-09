@@ -1,6 +1,6 @@
 testthat::test_that("PSIS diagnostics work, ATE", {
   testthat::skip_on_cran()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(23483)
   n <- 2^7
   p <- 6
@@ -10,11 +10,11 @@ testthat::test_that("PSIS diagnostics work, ATE", {
   estimand <- "ATE"
   
   #### get simulation functions ####
-  data <- causalOT::Hainmueller$new(n = n, p = p,
+  data <- pforOT::Hainmueller$new(n = n, p = p,
                                     design = design, overlap = overlap)
   data$gen_data()
-  test1 <- causalOT::calc_weight(x = data, estimand = estimand, method = "NNM")
-  test2 <- causalOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
+  test1 <- pforOT::calc_weight(x = data, estimand = estimand, method = "NNM")
+  test2 <- pforOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
   
   weights <- list(NNM = test1,
                   IPW = test2
@@ -32,7 +32,7 @@ testthat::test_that("PSIS diagnostics work, ATE", {
 
 testthat::test_that("PSIS diagnostics work, ATT", {
   testthat::skip_on_cran()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(23483)
   n <- 2^7
   p <- 6
@@ -42,11 +42,11 @@ testthat::test_that("PSIS diagnostics work, ATT", {
   estimand <- "ATT"
   
   #### get simulation functions ####
-  data <- causalOT::Hainmueller$new(n = n, p = p,
+  data <- pforOT::Hainmueller$new(n = n, p = p,
                                     design = design, overlap = overlap)
   data$gen_data()
-  test1 <- causalOT::calc_weight(x = data, estimand = estimand, method = "NNM")
-  test2 <- causalOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
+  test1 <- pforOT::calc_weight(x = data, estimand = estimand, method = "NNM")
+  test2 <- pforOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
   
   weights <- list(NNM = test1,
                   IPW = test2
@@ -64,7 +64,7 @@ testthat::test_that("PSIS diagnostics work, ATT", {
 
 testthat::test_that("PSIS diagnostics work, ATC", {
   testthat::skip_on_cran()
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(23483)
   n <- 2^7
   p <- 6
@@ -74,11 +74,11 @@ testthat::test_that("PSIS diagnostics work, ATC", {
   estimand <- "ATC"
   
   #### get simulation functions ####
-  data <- causalOT::Hainmueller$new(n = n, p = p,
+  data <- pforOT::Hainmueller$new(n = n, p = p,
                                     design = design, overlap = overlap)
   data$gen_data()
-  test1 <- causalOT::calc_weight(x = data, estimand = estimand, method = "NNM")
-  test2 <- causalOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
+  test1 <- pforOT::calc_weight(x = data, estimand = estimand, method = "NNM")
+  test2 <- pforOT::calc_weight(x = data, estimand = estimand, method = "Logistic")
   
   weights <- list(NNM = test1,
                   IPW = test2

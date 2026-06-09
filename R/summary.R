@@ -2,7 +2,7 @@ setOldClass("summary_causalWeights")
 
 #' Summary diagnostics for causalWeights
 #'
-#' @param object an object of class [causalWeights][causalOT::causalWeights-class]
+#' @param object an object of class [causalWeights][pforOT::causalWeights-class]
 #' @param r_eff The r_eff used in the PSIS calculation. See [PSIS_diag()][PSIS_diag()]
 #' @param penalty The penalty parameter to use 
 #' @param p The power of the Lp distance to use. Overridden by argument `cost.`
@@ -322,8 +322,8 @@ plot.summary_causalWeights <- function(x, ...) {
 
 #' plot.causalWeights
 #' 
-#' @param x A [causalOT::causalWeights-class] object
-#' @param r_eff The \eqn{r_\text{eff}} to use for the [causalOT::PSIS_diag()] function.
+#' @param x A [pforOT::causalWeights-class] object
+#' @param r_eff The \eqn{r_\text{eff}} to use for the [pforOT::PSIS_diag()] function.
 #' @param penalty The penalty of the optimal transport distance to use. If missing or NULL, the function will try to guess a suitable value depending if debias is TRUE or FALSE.
 #' @param p \eqn{L_p} distance metric power
 #' @param cost Supply your own cost function. Should take arguments `x1`, `x2`, and `p`.
@@ -336,7 +336,7 @@ plot.summary_causalWeights <- function(x, ...) {
 #' 
 #' @details The plot method first calls summary.causalWeights on the causalWeights object. Then plots the diagnostics from that summary object.
 #' 
-#' @seealso [causalOT::summary.causalWeights()]
+#' @seealso [pforOT::summary.causalWeights()]
 #'
 #' @return The plot method returns an invisible object of class summary_causalWeights.
 #' @export
@@ -349,7 +349,7 @@ plot.causalWeights <- function(x, r_eff = NULL, penalty, p = 2, cost = NULL,
   mc[[1]] <- quote(summary.causalWeights)
   ml  <- as.list(mc)
   names(ml)[which(names(ml) == "x")] <- "object"
-  summary.object <- eval(as.call(ml), envir = asNamespace("causalOT"))
+  summary.object <- eval(as.call(ml), envir = asNamespace("pforOT"))
   
   print(plot(summary.object, ...))
   return(invisible(summary.object))

@@ -29,7 +29,8 @@ setClass("gridSearch",
            nboot = "integer",
            solver = "R6",
            method = "character",
-           estimand = "character"
+           estimand = "character",
+           df = "ANY"
            # ns = "integer",
            # nt = "integer"
          )
@@ -47,7 +48,6 @@ gridSearch <- function(data, estimand, method, options = NULL) {
   # maybe arrange data into source and targets
   stopifnot(method %in% grid_search_methods())
   stopifnot(estimand %in% c("ATT","ATC", "ATE", "ATE.C", "ATE.T"))
-  
   if (estimand == "ATE") {
    return(
      methods::new("ateClass",
@@ -63,13 +63,18 @@ gridSearch <- function(data, estimand, method, options = NULL) {
       #   options$balance.functions$data <- data_separate(options$balance.functions$data,
       #                                              estimand)
       # }
+
+      df <- data.frame(data@x)
+      df$y <- data@y
+      df$z <- data@z
       
       problem_list <- balanceDistributions(source = source_target$source,
                                    target = source_target$target,
                                    a = source_target$a,
                                    b = source_target$b,
                                    method = method,
-                                   options = options)
+                                   options = options,
+                                   df = df)
       prob <- problem_list$problem
       options <- problem_list$options
       
@@ -98,7 +103,9 @@ gridSearch <- function(data, estimand, method, options = NULL) {
       if(grid.length == 0) grid.length <- grid_specific_opts$grid.length
       nboot <- grid_specific_opts$nboot
       
-      if(!is.null(grid_specific_opts$delta) && length(grid) == 1) nboot <- 0L
+      if(!is.null(grid_specific_opts$delta) && length(grid) == 1) {
+        nboot <- 0L
+      }
     } else {
       stop("method not found!")
     }
@@ -111,7 +118,8 @@ gridSearch <- function(data, estimand, method, options = NULL) {
       nboot = nboot,
       solver = prob,
       method = method,
-      estimand = estimand
+      estimand = estimand,
+      df = df #added to preserve data in the object
       ))
 
 }
@@ -300,7 +308,7 @@ setMethod("causalWeights", signature(object1 = "gridSearch", object2 = "numeric"
 #'
 #' @param object gridSearch. 
 #'
-#' @return returns object of class [causalWeights][causalOT::causalWeights-class]
+#' @return returns object of class [causalWeights][pforOT::causalWeights-class]
 #' @keywords internal
 setMethod("cot_solve", signature(object = "gridSearch"),
           function(object) {
@@ -317,11 +325,10 @@ setMethod("cot_solve", signature(object = "gridSearch"),
             n_penalty <- length(object@penalty_list)
             w <- vector("list", n_penalty)
             penalty <- NULL
-            
+
             # run solver on each penalty set
             for(k in 1:n_penalty) {
               penalty <- object@penalty_list[k]
-              # print(penalty)
               w[[k]] <- object@solver$solve(penalty, w[k-1])
             }
             
@@ -344,11 +351,10 @@ setMethod("cot_solve", signature(object = "gridSearch"),
 #'
 #' @param object ateClass. 
 #'
-#' @return object of class [causalWeights][causalOT::causalWeights-class]
+#' @return object of class [causalWeights][pforOT::causalWeights-class]
 #' @keywords internal
 setMethod("cot_solve", signature(object = "ateClass"),
           function(object) {
-            
             # control weights targeting full sample
             cw_w0 <- cot_solve(object@control)
             

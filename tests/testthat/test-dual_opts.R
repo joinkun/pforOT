@@ -1,5 +1,5 @@
 testthat::test_that("test forward functions", {
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   
   n <- 256
   
@@ -14,17 +14,17 @@ testthat::test_that("test forward functions", {
                                device = m1$device,
                                dtype = m1$dtype)
   
-  ot_tens <- causalOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "tensorized", penalty = 10)
+  ot_tens <- pforOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "tensorized", penalty = 10)
   
   C_xy <- ot_tens$C_xy$data
   C_xx <- ot_tens$C_xx$data
   
-  a_log<- causalOT:::log_weights(ot_tens$a)
-  b_log<- causalOT:::log_weights(ot_tens$b)
+  a_log<- pforOT:::log_weights(ot_tens$a)
+  b_log<- pforOT:::log_weights(ot_tens$b)
   lambda <- ot_tens$penalty
   delta <- 0.01
   
-  dual_forwards <- torch::jit_compile(causalOT:::dual_forward_code_tensorized)
+  dual_forwards <- torch::jit_compile(pforOT:::dual_forward_code_tensorized)
   
   a1_script <- dual_forwards$calc_w1(gamma$detach(), C_xy, a_log, b_log, torch::jit_scalar(lambda), torch::jit_scalar(as.integer(n)))
   
@@ -108,14 +108,14 @@ testthat::test_that("test forward functions", {
   
   
   # test keops versions
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   
-  ot_keops <- causalOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "online", penalty = 10)
+  ot_keops <- pforOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "online", penalty = 10)
   
   C_xy <- ot_keops$C_xy
   C_xx <- ot_keops$C_xx
   
-  keops_fun <- causalOT:::dual_forwards_keops
+  keops_fun <- pforOT:::dual_forwards_keops
   
   a1_script <- keops_fun$calc_w1(gamma$detach(), C_xy, a_log, b_log, torch::jit_scalar(lambda), torch::jit_scalar(as.integer(n)))
   
@@ -147,7 +147,7 @@ testthat::test_that("test forward functions", {
 })
 
 testthat::test_that("dual nn modules work as expected",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(1231)
   
   n <- 256
@@ -159,7 +159,7 @@ testthat::test_that("dual nn modules work as expected",{
   m1 <- Measure(x, target.values = colMeans(z), adapt = "weights")
   mt <- Measure(z)
   
-  opt <- causalOT:::cotDualOpt$new(n, 2)
+  opt <- pforOT:::cotDualOpt$new(n, 2)
   
   gamma <- torch::torch_tensor(stats::rnorm(n), 
                                device = m1$device,
@@ -167,17 +167,17 @@ testthat::test_that("dual nn modules work as expected",{
   
   torch::with_no_grad(opt$gamma$copy_(gamma))
   
-  ot_tens <- causalOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "tensorized", penalty = 10)
+  ot_tens <- pforOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "tensorized", penalty = 10)
   
   C_xy <- ot_tens$C_xy
   C_xx <- ot_tens$C_xx
   
-  a_log<- causalOT:::log_weights(ot_tens$a)
-  b_log<- causalOT:::log_weights(ot_tens$b)
+  a_log<- pforOT:::log_weights(ot_tens$a)
+  b_log<- pforOT:::log_weights(ot_tens$b)
   lambda <- ot_tens$penalty
   delta <- 0.01
   
-  dual_forwards <- torch::jit_compile(causalOT:::dual_forward_code_tensorized)
+  dual_forwards <- torch::jit_compile(pforOT:::dual_forward_code_tensorized)
   
   res <- dual_forwards$cot_dual(gamma$detach(), C_xy$data, C_xx$data, a_log, b_log, torch::jit_scalar(lambda), torch::jit_scalar(as.integer(n)))
   
@@ -215,7 +215,7 @@ testthat::test_that("dual nn modules work as expected",{
   tests(res, res_mod, opt, gamma)
   
   # bf
-  optbf <- causalOT:::cotDualBfOpt$new(n,2)
+  optbf <- pforOT:::cotDualBfOpt$new(n,2)
   
   torch::with_no_grad({
     optbf$beta$copy_(c(1,2))
@@ -240,17 +240,17 @@ testthat::test_that("dual nn modules work as expected",{
   
   #### check keops opt ####
   
-  causalOT:::rkeops_check()
+  pforOT:::rkeops_check()
   
-  ot_keops <- causalOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "online", penalty = 10)
+  ot_keops <- pforOT:::OT$new(x = x, y = z, debias = TRUE, tensorized = "online", penalty = 10)
   
   C_xy <- ot_keops$C_xy
   C_xx <- ot_keops$C_xx
   
-  opt <- causalOT:::cotDualOpt_keops$new(n, 2)
+  opt <- pforOT:::cotDualOpt_keops$new(n, 2)
   torch::with_no_grad(opt$gamma$copy_(gamma))
   
-  keops_fun <- causalOT:::dual_forwards_keops
+  keops_fun <- pforOT:::dual_forwards_keops
   
   res <- keops_fun$cot_dual(gamma$detach(), C_xy, C_xx, a_log, b_log, torch::jit_scalar(lambda), torch::jit_scalar(as.integer(n)))
   
@@ -258,7 +258,7 @@ testthat::test_that("dual nn modules work as expected",{
   tests(res, res_mod, opt, gamma)
   
   
-  optbf <- causalOT:::cotDualBfOpt_keops$new(n, 2)
+  optbf <- pforOT:::cotDualBfOpt_keops$new(n, 2)
   torch::with_no_grad({
     optbf$gamma$copy_(gamma)
     optbf$beta$copy_(beta1)
@@ -282,7 +282,7 @@ testthat::test_that("dual nn modules work as expected",{
 })
 
 testthat::test_that("training function works for dual optimizer",{
-  causalOT:::torch_check()
+  pforOT:::torch_check()
   set.seed(1231)
   
   n <- 256
@@ -294,7 +294,7 @@ testthat::test_that("training function works for dual optimizer",{
   m1 <- Measure(x, target.values = colMeans(z), adapt = "weights")
   mt <- Measure(z)
   
-  cot <- causalOT:::cotDualTrain$new(m1,mt)
+  cot <- pforOT:::cotDualTrain$new(m1,mt)
   otp <- OTProblem(m1,mt)
   
   cot_names <- names(formals(cot$setup_arguments))
@@ -312,14 +312,14 @@ testthat::test_that("training function works for dual optimizer",{
   testthat::expect_true(length(cot$.__enclos_env__$private$nn_holder$beta) == ncol(x))
   
   # no bf, tensor
-  testthat::expect_true(inherits(causalOT:::cotDualTrain$new(Measure(x, adapt = "weights"), Measure(z))$setup_arguments()$.__enclos_env__$private$nn_holder, "cotDualOpt"))
+  testthat::expect_true(inherits(pforOT:::cotDualTrain$new(Measure(x, adapt = "weights"), Measure(z))$setup_arguments()$.__enclos_env__$private$nn_holder, "cotDualOpt"))
   
   #no bf, keops
-  causalOT:::rkeops_check()
-  testthat::expect_true(inherits(causalOT:::cotDualTrain$new(Measure(x, adapt = "weights"), Measure(z))$setup_arguments(cost.online = "online")$.__enclos_env__$private$nn_holder, "cotDualOpt_keops"))
+  pforOT:::rkeops_check()
+  testthat::expect_true(inherits(pforOT:::cotDualTrain$new(Measure(x, adapt = "weights"), Measure(z))$setup_arguments(cost.online = "online")$.__enclos_env__$private$nn_holder, "cotDualOpt_keops"))
   
   #no bf, keops
-  testthat::expect_true(inherits(causalOT:::cotDualTrain$new(Measure(x, adapt = "weights", target.values = colMeans(z)), Measure(z))$setup_arguments(cost.online = "online")$.__enclos_env__$private$nn_holder, "cotDualBfOpt_keops"))
+  testthat::expect_true(inherits(pforOT:::cotDualTrain$new(Measure(x, adapt = "weights", target.values = colMeans(z)), Measure(z))$setup_arguments(cost.online = "online")$.__enclos_env__$private$nn_holder, "cotDualBfOpt_keops"))
   
   
   #### test weights function ###
@@ -484,7 +484,7 @@ testthat::test_that("training function works for dual optimizer",{
   
   
   # hyperparam
-  cot <- causalOT:::cotDualTrain$new(m1,mt)
+  cot <- pforOT:::cotDualTrain$new(m1,mt)
   cot$setup_arguments()
   # debugonce(cot$solve)
   cot$solve(niter = 1L, torch_optim = torch::optim_rmsprop, torch_scheduler = torch::lr_multiplicative)

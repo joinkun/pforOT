@@ -4,7 +4,7 @@ node <- Sys.getenv('SLURM_JOB_NODELIST')
 message(node)
 
 #### Load Packages ####
-library(causalOT)
+library(pforOT)
 
 #### Environmental Parameters ####
 arraynum <- as.numeric(Sys.getenv('SLURM_ARRAY_TASK_ID'))
@@ -81,7 +81,7 @@ message("penalty: ", paste(penalty, collapse = ", "))
 
 #### Simulations ####
 times <- proc.time()
-output <- causalOT:::sim.function(dataGen = dataGen,
+output <- pforOT:::sim.function(dataGen = dataGen,
                        methods = methods,
                        nsims = nsims,
                        p = wass_power,
@@ -116,7 +116,7 @@ print(run.time)
 date <- gsub(" ", "_", as.name(as.character(Sys.time())))
 date <- gsub(":", "=", date)
 term <- paste0(c(date, ".rds"), collapse="")
-otfl <- paste0(c("causalOT",data,design,overlap,n,p,jobid,expernum,arraynum,term),collapse="_")
+otfl <- paste0(c("pforOT",data,design,overlap,n,p,jobid,expernum,arraynum,term),collapse="_")
 otdr <- file.path("Output", data, design, overlap, n, p)
 otfn <- file.path(otdr, otfl)
 if(!dir.exists(otdr)) {

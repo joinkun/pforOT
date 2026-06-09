@@ -81,11 +81,11 @@ PSIS.list <- function(x, r_eff = NULL, ...) {
 #' Pareto-Smoothed Importance Sampling
 #'
 #' @param x For `PSIS()`, a vector of weights, 
-#' an object of class [causalWeights][causalOT::causalWeights-class], 
+#' an object of class [causalWeights][pforOT::causalWeights-class], 
 #' or a list with slots  "w0" and "w1". For `PSIS_diag`, 
 #' the results of a run of `PSIS()`.
 #' @param r_eff A vector of relative effective sample size with one estimate per observation. If providing
-#' an object of class [causalWeights][causalOT::causalWeights-class], should be a list of vectors with one vector for each
+#' an object of class [causalWeights][pforOT::causalWeights-class], should be a list of vectors with one vector for each
 #' sample. See [psis()][loo::psis] from the `loo` package for more details. Updates to the `loo` package now make it so this
 #' parameter should be ignored.
 #' @param ... Arguments passed to the [psis()][loo::psis] function.
@@ -104,7 +104,7 @@ PSIS.list <- function(x, r_eff = NULL, ...) {
 #' 
 #' @docType methods
 #' 
-#' @seealso [ESS()][causalOT::ESS]
+#' @seealso [ESS()][pforOT::ESS]
 #'
 #' @examples
 #' x <- runif(100)

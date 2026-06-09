@@ -2,30 +2,30 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 bootStrap_ <- function(w_list, nboot, object) {
-    .Call(`_causalOT_bootStrap_`, w_list, nboot, object)
+    .Call(`_pforOT_bootStrap_`, w_list, nboot, object)
 }
 
 sbw_oop_bs_ <- function(w_list, nboot, source, target, a) {
-    .Call(`_causalOT_sbw_oop_bs_`, w_list, nboot, source, target, a)
+    .Call(`_pforOT_sbw_oop_bs_`, w_list, nboot, source, target, a)
 }
 
 entBW_obj_ <- function(vars_, A_, delta) {
-    .Call(`_causalOT_entBW_obj_`, vars_, A_, delta)
+    .Call(`_pforOT_entBW_obj_`, vars_, A_, delta)
 }
 
 entBW_grad_ <- function(vars_, A_, delta) {
-    .Call(`_causalOT_entBW_grad_`, vars_, A_, delta)
+    .Call(`_pforOT_entBW_grad_`, vars_, A_, delta)
 }
 
 logSumExp <- function(x_) {
-    .Call(`_causalOT_logSumExp`, x_)
+    .Call(`_pforOT_logSumExp`, x_)
 }
 
 rowLogSumExp <- function(x_) {
-    .Call(`_causalOT_rowLogSumExp`, x_)
+    .Call(`_pforOT_rowLogSumExp`, x_)
 }
 
 colLogSumExp <- function(x_) {
-    .Call(`_causalOT_colLogSumExp`, x_)
+    .Call(`_pforOT_colLogSumExp`, x_)
 }
 

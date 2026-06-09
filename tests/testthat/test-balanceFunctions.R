@@ -11,17 +11,17 @@ testthat::test_that("balanceFunction class forms",{
   b <- rep(1/m, m)
   delta <- 0.5
   
-  testthat::expect_silent(bf <- causalOT:::balanceFunction$new(source = x, 
+  testthat::expect_silent(bf <- pforOT:::balanceFunction$new(source = x, 
                             target = y, 
                             a = a, b = b, 
                             delta = delta))
   
-  testthat::expect_silent(ebw <- causalOT:::EntropyBW$new(source = x, 
+  testthat::expect_silent(ebw <- pforOT:::EntropyBW$new(source = x, 
                                                           target = y, 
                                                           a = a, b = b))
   
   testthat::skip_if_not_installed("osqp")
-  testthat::expect_output(sbw <- causalOT:::SBW$new(source = x, 
+  testthat::expect_output(sbw <- pforOT:::SBW$new(source = x, 
                  target = y, 
                  a = a, b = b))
   
@@ -42,7 +42,7 @@ testthat::test_that("balanceFunction optimizes",{
   
   #L2
   testthat::skip_if_not_installed("osqp")
-  testthat::expect_output(sbw <- causalOT:::SBW$new(source = x, 
+  testthat::expect_output(sbw <- pforOT:::SBW$new(source = x, 
                                                     target = y, 
                                                     a = a, b = b))
   
@@ -55,7 +55,7 @@ testthat::test_that("balanceFunction optimizes",{
   
   # entropy
   testthat::skip_if_not_installed("lbfgsb3c")
-  testthat::expect_silent(ebw <- causalOT:::EntropyBW$new(source = x, 
+  testthat::expect_silent(ebw <- pforOT:::EntropyBW$new(source = x, 
                                                           target = y, 
                                                           a = a, b = b))
   delta <- ebw$gridInit(NULL, 7L)
@@ -82,18 +82,18 @@ testthat::test_that("functions catch errors", {
   delta <- 0.5
   
   testthat::skip_if_not_installed("lbfgsb3c")
-  testthat::expect_error(ebw <- causalOT:::EntropyBW$new(source = x, 
+  testthat::expect_error(ebw <- pforOT:::EntropyBW$new(source = x, 
                                                          target = y, 
                                                          a = a, b = b))
-  testthat::expect_silent(ebw <- causalOT:::EntropyBW$new(source = y, 
+  testthat::expect_silent(ebw <- pforOT:::EntropyBW$new(source = y, 
                                                           target = x, 
                                                           a = b, b = a))
   
   testthat::skip_if_not_installed("osqp")
-  testthat::expect_error(sbw <- causalOT:::SBW$new(source = x, 
+  testthat::expect_error(sbw <- pforOT:::SBW$new(source = x, 
                                                     target = y, 
                                                     a = a, b = b))
-  testthat::expect_output(sbw <- causalOT:::SBW$new(source = y, 
+  testthat::expect_output(sbw <- pforOT:::SBW$new(source = y, 
                                                    target = x, 
                                                    a = b, b = a))
   

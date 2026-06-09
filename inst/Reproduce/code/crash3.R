@@ -3,7 +3,7 @@ node <- Sys.getenv('SLURM_JOB_NODELIST')
 message(node)
 
 #### load packages ####
-library(causalOT)
+library(pforOT)
 library(dplyr)
 
 #### Environmental params

@@ -1,6 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
-#include "causalOT_types.h"
+#include "pforOT_types.h"
 
 double logSumExp(vector & x_);
 double logSumExp(matrix & x_);

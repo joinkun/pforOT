@@ -172,7 +172,7 @@ dataHolder <- function(x,z,y = NA_real_,weights=NA_real_) UseMethod("dataHolder"
 #' 
 #' @details Creates an object used internally by the `causalOT` package for data management. 
 #'
-#' @param x the covariate data. Can be a matrix, an object of class `dataHolder` or a [causalOT::DataSim] object. The latter two object types won't need arguments `z` or `y`.
+#' @param x the covariate data. Can be a matrix, an object of class `dataHolder` or a [pforOT::DataSim] object. The latter two object types won't need arguments `z` or `y`.
 #' @param z the treatment indicator
 #' @param y the outcome data
 #' @param weights the empirical distribution of the sample
@@ -284,7 +284,7 @@ setMethod("dataHolder", signature(x = "ANY", z = "ANY", y = "ANY", weights = "AN
 #' @param data a data.frame with the data
 #' @param weights optional vector of sampling weights for the data
 #'
-#' @return Returns an object of class [causalOT::dataHolder()]
+#' @return Returns an object of class [pforOT::dataHolder()]
 #' 
 #' @details This will take the formulas specified and transform that data.frame into a dataHolder object that is used internally by the causalOT package. Take care if you do not specify an outcome formula that you do not include the outcome in the data.frame. If you are not careful, the function may include the outcome as a covariate, which is not kosher in causal inference during the design phase. 
 #' 
